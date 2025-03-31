@@ -1,4 +1,21 @@
 # Problem 1
+### Projectile Motion Range Formula
+
+The range \( R \) of a projectile is given by the formula:
+
+$$
+R = \frac{v_0^2 \sin(2\theta_0)}{g}
+$$
+
+Where:
+- \( R \) is the range,
+- \( v_0 \) is the initial velocity,
+- \( \theta_0 \) is the angle of projection,
+- \( g \) is the acceleration due to gravity.
+
+### Python Code to Calculate the Range
+
+```python
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -32,3 +49,4 @@ plt.ylabel('Range (meters)')
 plt.grid(True)
 plt.legend()
 plt.show()
+
