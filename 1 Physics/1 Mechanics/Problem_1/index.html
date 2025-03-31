@@ -123,18 +123,21 @@
 <p>import numpy as np
 import matplotlib.pyplot as plt</p>
 <h1 id="constants">Constants</h1>
-<p>g = 9.81  # acceleration due to gravity (m/s^2)</p>
-<h1 id="function-to-calculate-the-range">Function to calculate the range</h1>
-<p>def calculate_range(v0, theta_0):
-    # Convert angle to radians
-    theta_0_rad = np.radians(theta_0)
-    # Range formula
-    return (v0*<em>2 * np.sin(2</em>theta_0_rad)) / g</p>
-<h1 id="initial-velocity">Initial velocity</h1>
-<p>v0 = 20  # m/s</p>
-<h1 id="angles-from-0-to-90-degrees">Angles from 0 to 90 degrees</h1>
-<p>angles = np.linspace(0, 90, 100)
-ranges = [calculate_range(v0, angle) for angle in angles]</p>
+<p>g = 9.81  # Gravitational acceleration in m/s^2</p>
+<h1 id="function-to-calculate-the-range-based-on-initial-velocity-and-launch-angle">Function to calculate the range based on initial velocity and launch angle</h1>
+<p>def calculate_range(v0, theta_0_deg):
+    # Convert angle from degrees to radians
+    theta_0_rad = np.radians(theta_0_deg)</p>
+<pre><code># Range formula: R = (v0^2 * sin(2*theta)) / g
+R = (v0**2 * np.sin(2 * theta_0_rad)) / g
+return R
+</code></pre>
+<h1 id="initial-velocity-ms">Initial velocity (m/s)</h1>
+<p>v0 = 20  # Example initial velocity, you can change it</p>
+<h1 id="launch-angles-from-0-to-90-degrees">Launch angles from 0 to 90 degrees</h1>
+<p>angles = np.linspace(0, 90, 100)  # 100 angles from 0 to 90 degrees</p>
+<h1 id="calculate-the-range-for-each-angle">Calculate the range for each angle</h1>
+<p>ranges = [calculate_range(v0, angle) for angle in angles]</p>
 <h1 id="plotting-the-range-as-a-function-of-the-angle">Plotting the range as a function of the angle</h1>
 <p>plt.figure(figsize=(8, 6))
 plt.plot(angles, ranges, label=f'Initial velocity = {v0} m/s')
