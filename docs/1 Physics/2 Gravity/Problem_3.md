@@ -35,6 +35,11 @@
       border-bottom: 2px solid #cbd5e0;
       padding-bottom: 0.3rem;
     }
+    h3 {
+      font-size: 1.5rem;
+      margin-top: 1.5rem;
+      color: #2c5282;
+    }
     p, ul {
       font-size: 1.125rem;
       line-height: 1.75;
@@ -54,7 +59,7 @@
       font-family: 'Courier New', monospace;
     }
     .plot {
-      margin-top: 2rem;
+      margin: 2rem 0;
     }
     footer {
       text-align: center;
@@ -70,56 +75,68 @@
 
     <h2>Motivation</h2>
     <p>
-      When an object is released from a moving rocket near Earth, its trajectory depends on initial conditions and gravitational forces. This scenario presents a rich problem, blending principles of orbital mechanics and numerical methods. Understanding the potential trajectories is vital for space missions, such as deploying payloads or returning objects to Earth.
+      When a payload is released from a rocket in Earth's vicinity, it doesn't just fall straight down. Instead, depending on its speed, direction, and altitude, it might return to Earth, enter orbit, or even escape into space. Studying such trajectories enhances mission planning and highlights the richness of Newtonian gravity in space mechanics.
     </p>
 
     <h2>Theoretical Foundation</h2>
+    <h3>Newtonian Gravitation</h3>
     <p>
-      Using Newton's Law of Gravitation and second law of motion, the motion of a payload under gravity can be modeled by:
-      \[ \vec{F} = -\frac{GMm}{r^2} \hat{r} \quad \Rightarrow \quad \vec{a} = -\frac{GM}{r^2} \hat{r} \]
+      According to Newton’s Law of Universal Gravitation, the gravitational force experienced by the payload is:
     </p>
+    <p>$$ \vec{F} = -\frac{GMm}{r^2} \hat{r} $$</p>
     <p>
-      This equation leads to different conic section trajectories (elliptical, parabolic, or hyperbolic), depending on the initial velocity and direction.
+      Dividing both sides by mass \(m\), we get the acceleration:
     </p>
+    <p>$$ \vec{a} = -\frac{GM}{r^2} \hat{r} $$</p>
+
+    <h3>Trajectory Classification</h3>
+    <p>
+      Based on the total mechanical energy, the motion falls into one of three categories:
+    </p>
+    <ul>
+      <li><strong>Elliptic Orbit:</strong> If total energy is negative.</li>
+      <li><strong>Parabolic Escape:</strong> If total energy is exactly zero.</li>
+      <li><strong>Hyperbolic Escape:</strong> If total energy is positive.</li>
+    </ul>
 
     <h2>Python Simulation</h2>
+    <p>
+      We simulate the trajectory using Newtonian mechanics and visualize it using <code>matplotlib</code>.
+    </p>
     <pre><code>import numpy as np
 import matplotlib.pyplot as plt
 
-G = 6.67430e-11  # m^3 kg^-1 s^-2
-earth_mass = 5.972e24  # kg
-earth_radius = 6.371e6  # m
+G = 6.67430e-11  # Gravitational constant
+M = 5.972e24     # Mass of Earth (kg)
+R = 6.371e6      # Radius of Earth (m)
 
 # Initial conditions
-v0 = 7800  # m/s (example velocity)
-th = np.radians(45)  # launch angle
-r0 = np.array([earth_radius, 0])
+v0 = 7800                       # Initial speed (m/s)
+th = np.radians(45)             # Launch angle
+r0 = np.array([R, 0])
 v0_vec = v0 * np.array([np.cos(th), np.sin(th)])
 
-# Time settings
+# Time steps
 dt = 1
-steps = 5000
-
-# Arrays to store data
-r = np.zeros((steps, 2))
-v = np.zeros((steps, 2))
-r[0] = r0
-v[0] = v0_vec
+N = 5000
+r = np.zeros((N, 2))
+v = np.zeros((N, 2))
+r[0], v[0] = r0, v0_vec
 
 # Simulation loop
-for i in range(steps - 1):
-    dist = np.linalg.norm(r[i])
-    acc = -G * earth_mass * r[i] / dist**3
-    v[i + 1] = v[i] + acc * dt
+for i in range(N - 1):
+    d = np.linalg.norm(r[i])
+    a = -G * M * r[i] / d**3
+    v[i + 1] = v[i] + a * dt
     r[i + 1] = r[i] + v[i + 1] * dt
 
-# Plot
+# Plot results
 plt.figure(figsize=(8, 8))
-plt.plot(r[:, 0] / 1e3, r[:, 1] / 1e3, label='Payload Trajectory')
+plt.plot(r[:,0]/1000, r[:,1]/1000, label='Payload Path')
 plt.plot(0, 0, 'ro', label='Earth')
+plt.title('Payload Trajectory Near Earth')
 plt.xlabel('X (km)')
 plt.ylabel('Y (km)')
-plt.title('Trajectory of a Freely Released Payload')
 plt.axis('equal')
 plt.grid(True)
 plt.legend()
@@ -127,21 +144,45 @@ plt.tight_layout()
 plt.savefig('payload_trajectory.png')
 plt.show()</code></pre>
 
-    <h2>Applications</h2>
+    <h2>Interactive Graph</h2>
+    <div id="trajectoryPlot" class="plot"></div>
+    <script>
+      Plotly.newPlot('trajectoryPlot', [{
+        x: [],
+        y: [],
+        mode: 'lines',
+        name: 'Trajectory',
+        line: {color: '#2b6cb0'}
+      }, {
+        x: [0],
+        y: [0],
+        mode: 'markers',
+        name: 'Earth',
+        marker: {size: 10, color: 'red'}
+      }], {
+        title: 'Simulated Payload Trajectory (Interactive)',
+        xaxis: {title: 'X (km)'},
+        yaxis: {title: 'Y (km)'},
+        margin: {t: 50},
+        showlegend: true
+      });
+    </script>
+
+    <h2>Implications and Future Work</h2>
     <ul>
-      <li>Satellite deployment trajectories</li>
-      <li>Payload reentry analysis</li>
-      <li>Space debris dynamics</li>
+      <li>Used in satellite mission design and orbital deployment logistics.</li>
+      <li>Serves as foundation for controlled descent and re-entry modeling.</li>
+      <li>Base case for interplanetary mission trajectories with adjusted parameters.</li>
     </ul>
 
-    <h2>Discussion</h2>
+    <h3>Limitations</h3>
     <ul>
-      <li><strong>Limitations:</strong> Assumes point mass Earth and ignores atmosphere</li>
-      <li><strong>Extensions:</strong> Add atmospheric drag, Earth's oblateness, and 3D motion</li>
+      <li>Does not account for atmospheric drag or Earth’s oblateness.</li>
+      <li>No modeling of multi-body gravitational interactions.</li>
     </ul>
 
     <footer>
-      &copy; 2025 Physics Simulations | Payload Dynamics and Trajectories
+      &copy; 2025 Physics Simulations | Trajectory Analysis Enhanced
     </footer>
   </div>
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
