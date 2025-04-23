@@ -146,17 +146,6 @@
     h1, h2, h3 {
       color: #2c3e50;
     }
-    code {
-      background: #eee;
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-    pre {
-      background: #f4f4f4;
-      padding: 10px;
-      border-radius: 6px;
-      overflow-x: auto;
-    }
     #result {
       font-weight: bold;
       color: #1e8449;
@@ -180,48 +169,39 @@
 <h1>📐 Equivalent Resistance Using Graph Theory</h1>
 <h2>🧠 Motivation</h2>
 <p>
-      Complex resistor networks can be tough to simplify using only series and parallel rules. Graph theory gives us a smarter way. Each node is a junction, and each resistor is an edge with a weight (the resistance).
+      Calculating equivalent resistance is crucial in understanding how electrical circuits behave. Traditional methods using only series and parallel resistor rules can become challenging with complex networks. Graph theory offers a structured, algorithmic approach.
     </p>
 <p>
-      With graph algorithms, we can reduce even complicated networks to one resistance value—fast and with automation in mind.
+      In graph theory, we treat each junction as a node and each resistor as an edge with a weight (resistance). By merging resistors using logical rules based on connectivity, we simplify the network into a single equivalent resistance efficiently.
     </p>
 <h2>🛠️ How It Works</h2>
 <ol>
-<li>Represent the circuit as a graph (nodes and weighted edges).</li>
-<li>Find simple series (single path between 2 nodes) and merge.</li>
-<li>Find parallel connections (multiple edges between same two nodes) and merge.</li>
-<li>Repeat until only one edge remains between source and sink.</li>
+<li>Draw the circuit as a graph using nodes and resistors (edges with weights).</li>
+<li>Combine resistors in series—when there's a single path between two junctions.</li>
+<li>Combine resistors in parallel—when multiple resistors connect the same two junctions.</li>
+<li>Repeat the simplification process until one edge remains representing total resistance.</li>
 </ol>
-<h3>📄 Pseudocode</h3>
-<pre>
-Repeat until graph cannot be simplified:
-  For all pairs of nodes:
-    If exactly one resistor connects them:
-      Merge in series if part of a line
-    If multiple resistors connect them:
-      Merge using parallel rule: 1/R_eq = 1/R1 + 1/R2 + ...
-Return final edge between source and sink as equivalent resistance
-    </pre>
 <h2>🧪 Try It Out (Simple Series &amp; Parallel Example)</h2>
-<p>Here’s a simple graph:</p>
+<p>This example shows a basic circuit with three resistors:</p>
 <ul>
-<li>Node A → B (resistor: 100 Ω)</li>
-<li>Node B → C (resistor: 200 Ω)</li>
-<li>Node A → C (parallel resistor: 300 Ω)</li>
+<li><strong>Resistor 1:</strong> Node A → B (100 Ω)</li>
+<li><strong>Resistor 2:</strong> Node B → C (200 Ω)</li>
+<li><strong>Resistor 3:</strong> Node A → C (300 Ω, in parallel with the A→B→C path)</li>
 </ul>
+<p>We will compute the total resistance from Node A to Node C using both paths (series and parallel).</p>
 <div id="circuitGraph"></div>
 <button onclick="calculateResistance()">💡 Compute Equivalent Resistance</button>
 <p id="result"></p>
 <h3>📊 Efficiency &amp; Improvements</h3>
 <ul>
-<li>Efficient for tree-like and small cyclic graphs.</li>
-<li>Can be optimized using union-find, DFS, and sparse matrix solvers.</li>
-<li>Scaleable using networkx, scipy, or symbolic solvers.</li>
+<li>Optimized for acyclic graphs and can handle simple cycles.</li>
+<li>Further optimized using union-find, DFS, or matrix-based solvers.</li>
+<li>Adaptable to large-scale simulations using network analysis libraries.</li>
 </ul>
 <h2>📚 Examples &amp; Tests</h2>
 <ul>
-<li>🔸 Series: A-B (100Ω), B-C (200Ω) → R_eq = 300Ω</li>
-<li>🔸 Parallel: A-C (300Ω), via B path (100+200) → R_eq = 1 / (1/300 + 1/300) = 150Ω</li>
+<li>🔸 Series: A-B (100Ω), B-C (200Ω) → <strong>R_eq = 300Ω</strong></li>
+<li>🔸 Parallel: A-C (300Ω) in parallel with A-B-C path (100Ω + 200Ω) → <strong>R_eq = 150Ω</strong></li>
 </ul>
 </div>
 <script>
