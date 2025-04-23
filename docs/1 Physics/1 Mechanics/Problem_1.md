@@ -2,73 +2,122 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Projectile Motion Explorer</title>
+    <title>Projectile Motion: Range vs Angle</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 40px;
-            line-height: 1.6;
-            background-color: #f9f9f9;
+            margin: 40px auto;
+            max-width: 900px;
+            background-color: #fefefe;
             color: #333;
+            line-height: 1.6;
         }
-        h1, h2 {
+        h1, h2, h3 {
             color: #2c3e50;
         }
-        #plot {
-            width: 100%;
-            max-width: 800px;
-            margin: auto;
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            overflow-x: auto;
         }
-        .section {
-            margin-bottom: 50px;
+        code {
+            font-family: Consolas, monospace;
+            color: #2d3436;
+        }
+        #plot {
+            margin-top: 20px;
+        }
+        label {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <h1>Projectile Range vs. Angle</h1>
+    <h1>Investigating the Range as a Function of the Angle of Projection</h1>
 
-    <div class="section">
-        <h2>1. Theoretical Foundation</h2>
+    <div>
+        <h2>📘 Theoretical Foundation</h2>
         <p>
-            Projectile motion describes the curved path an object follows when launched at an angle.
-            Ignoring air resistance, the range of a projectile is given by the formula:
+            In ideal projectile motion, an object launched at angle <strong>θ</strong> with speed <strong>v₀</strong> follows a parabolic path.
+            The horizontal range R is derived from Newton’s laws as:
         </p>
         <pre><code>R = (v₀² * sin(2θ)) / g</code></pre>
+        <p>This equation emerges by solving the motion components:</p>
+        <ul>
+            <li><code>vx = v₀ * cos(θ)</code></li>
+            <li><code>vy = v₀ * sin(θ)</code></li>
+            <li>Time of flight: <code>T = 2 * v₀ * sin(θ) / g</code></li>
+            <li>Range: <code>R = vx * T</code></li>
+        </ul>
         <p>
-            Where:
-            <ul>
-                <li><strong>v₀</strong>: Initial velocity</li>
-                <li><strong>θ</strong>: Launch angle</li>
-                <li><strong>g</strong>: Gravitational acceleration (9.81 m/s²)</li>
-            </ul>
+            This results in a <strong>family of parabolas</strong> based on initial velocity and angle.
+            All trajectories share a common shape but scale differently with <code>v₀</code> and <code>θ</code>.
         </p>
     </div>
 
-    <div class="section">
-        <h2>2. Simulation</h2>
-        <label for="velocity">Initial Velocity (m/s):</label>
+    <div>
+        <h2>🧪 Simulation: Range vs Angle</h2>
+        <label for="velocity">Adjust Initial Velocity (m/s):</label>
         <input type="range" id="velocity" min="5" max="100" value="30" oninput="updatePlot()">
         <span id="velocityValue">30</span> m/s
 
         <div id="plot"></div>
     </div>
 
-    <div class="section">
-        <h2>3. Practical Insights</h2>
+    <div>
+        <h2>📈 Graphical Representations</h2>
         <p>
-            The range is maximum at a 45° angle for flat ground and no air resistance.
-            You can explore how different velocities affect the shape and peak of the curve.
+            The graph above shows how the range changes with projection angle.
+            Maximum range is achieved at 45° when launched from flat ground.
+            You can observe how higher initial velocities scale the range.
         </p>
+    </div>
+
+    <div>
+        <h2>🧠 Limitations and Real-World Factors</h2>
         <p>
-            Real-world adjustments may include:
+            This ideal model assumes:
             <ul>
-                <li>Initial height offset</li>
-                <li>Air resistance (drag)</li>
-                <li>Uneven terrain</li>
+                <li>No air resistance</li>
+                <li>Flat launch and landing heights</li>
+                <li>No wind or drag</li>
             </ul>
         </p>
+        <p>
+            Realistic modeling can include:
+            <ul>
+                <li>Drag force (air resistance)</li>
+                <li>Uneven terrain or launch height</li>
+                <li>Wind vectors</li>
+                <li>Spinning effects (like Magnus force)</li>
+            </ul>
+            These can be simulated using numerical methods like Euler or Runge-Kutta solvers.
+        </p>
+    </div>
+
+    <div>
+        <h2>📜 Python Code (for reference or notebook submission)</h2>
+        <p>You can copy this into a Python file or Jupyter Notebook.</p>
+        <pre><code>import numpy as np
+import matplotlib.pyplot as plt
+
+def compute_range(v0, g, angle_deg):
+    angle_rad = np.radians(angle_deg)
+    return (v0**2 * np.sin(2 * angle_rad)) / g
+
+v0 = 30.0
+g = 9.81
+angles = np.linspace(0, 90, 500)
+ranges = compute_range(v0, g, angles)
+
+plt.plot(angles, ranges)
+plt.title(\"Range vs Angle of Projection\")
+plt.xlabel(\"Angle (degrees)\")
+plt.ylabel(\"Range (meters)\")
+plt.grid(True)
+plt.show()</code></pre>
     </div>
 
     <script>
@@ -107,7 +156,7 @@
             Plotly.newPlot('plot', [trace], layout);
         }
 
-        updatePlot();  // initial plot
+        updatePlot();  // initial render
     </script>
 
 </body>
