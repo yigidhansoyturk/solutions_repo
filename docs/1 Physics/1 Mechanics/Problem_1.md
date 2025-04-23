@@ -1,52 +1,134 @@
-# Problem 1
-### Projectile Motion Range Formula
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Investigating the Range as a Function of the Angle of Projection</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+    pre {
+      background: #272822;
+      color: #f8f8f2;
+      padding: 1em;
+      overflow-x: auto;
+    }
+    code {
+      font-family: Consolas, monospace;
+    }
+    .equation {
+      background: #e3e3e3;
+      padding: 1em;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 1rem 0;
+    }
+    img {
+      max-width: 100%;
+      display: block;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Investigating the Range as a Function of the Angle of Projection</h1>
 
-The range \( R \) of a projectile is given by the formula:
+  <h2>Motivation</h2>
+  <p>
+    Projectile motion, while seemingly simple, offers a rich playground for exploring fundamental principles of physics.
+    The task is to analyze how the range of a projectile depends on its angle of projection. This system involves parameters
+    like initial velocity, gravitational acceleration, and launch height — all contributing to a diverse family of solutions.
+  </p>
 
-$$
-R = \frac{v_0^2 \sin(2\theta_0)}{g}
-$$
+  <h2>1. Theoretical Foundation</h2>
+  <p>
+    The equations of projectile motion are derived from Newton's laws. Assume a projectile is launched from ground level
+    with initial velocity <em>v<sub>0</sub></em> at an angle <em>&theta;</em>.
+  </p>
 
-Where:
-- \( R \) is the range,
-- \( v_0 \) is the initial velocity,
-- \( \theta_0 \) is the angle of projection,
-- \( g \) is the acceleration due to gravity.
+  <div class="equation">
+    Horizontal motion: x(t) = v<sub>0</sub> cos(&theta;) * t<br>
+    Vertical motion: y(t) = v<sub>0</sub> sin(&theta;) * t - 0.5 * g * t<sup>2</sup>
+  </div>
 
-### Python Code to Calculate the Range
+  <p>
+    To find the range, we determine the time <em>t</em> at which <em>y(t) = 0</em> and plug it into <em>x(t)</em>:
+  </p>
+  <div class="equation">
+    Range R = (v<sub>0</sub><sup>2</sup> * sin(2&theta;)) / g
+  </div>
 
-```python
-import numpy as np
+  <h2>2. Analysis of the Range</h2>
+  <p>
+    This range is maximum when sin(2&theta;) = 1, i.e., when &theta; = 45&deg;. Increasing the initial velocity or reducing
+    gravitational acceleration increases the range.
+  </p>
+  <img src="range_vs_angle.png" alt="Graph showing range as a function of angle">
+
+  <h3>Effects of Parameters:</h3>
+  <ul>
+    <li>Initial velocity <strong>v<sub>0</sub></strong>: Quadratic increase in range.</li>
+    <li>Gravitational acceleration <strong>g</strong>: Inversely proportional to range.</li>
+    <li>Launch angle <strong>&theta;</strong>: Optimal range at 45&deg; under ideal conditions.</li>
+  </ul>
+
+  <h2>3. Practical Applications</h2>
+  <p>
+    This model applies to various real-world problems:
+  </p>
+  <ul>
+    <li>Ballistics and sports (e.g., soccer, golf, basketball)</li>
+    <li>Engineering (e.g., water fountains, structural launches)</li>
+    <li>Astrophysics (e.g., satellite launch trajectories)</li>
+  </ul>
+  <p>
+    In reality, factors like air resistance and wind must be considered for accuracy.
+  </p>
+
+  <h2>4. Implementation</h2>
+  <p>
+    A Python simulation can visualize the dependency of range on angle:
+  </p>
+
+  <pre><code>import numpy as np
 import matplotlib.pyplot as plt
 
-# Constants
-g = 9.81  # Gravitational acceleration in m/s^2
+g = 9.81  # m/s^2
+v0 = 20   # m/s
+angles = np.linspace(0, 90, 500)
+ranges = (v0 ** 2) * np.sin(2 * np.radians(angles)) / g
 
-# Function to calculate the range based on initial velocity and launch angle
-def calculate_range(v0, theta_0_deg):
-    # Convert angle from degrees to radians
-    theta_0_rad = np.radians(theta_0_deg)
-    
-    # Range formula: R = (v0^2 * sin(2*theta)) / g
-    R = (v0**2 * np.sin(2 * theta_0_rad)) / g
-    return R
-
-# Initial velocity (m/s)
-v0 = 20  # Example initial velocity, you can change it
-
-# Launch angles from 0 to 90 degrees
-angles = np.linspace(0, 90, 100)  # 100 angles from 0 to 90 degrees
-
-# Calculate the range for each angle
-ranges = [calculate_range(v0, angle) for angle in angles]
-
-# Plotting the range as a function of the angle
-plt.figure(figsize=(8, 6))
-plt.plot(angles, ranges, label=f'Initial velocity = {v0} m/s')
-plt.title('Projectile Range vs Angle of Projection')
-plt.xlabel('Launch Angle (degrees)')
+plt.plot(angles, ranges)
+plt.title('Range vs Angle of Projection')
+plt.xlabel('Angle (degrees)')
 plt.ylabel('Range (meters)')
 plt.grid(True)
-plt.legend()
-plt.show()
+plt.savefig('range_vs_angle.png')
+plt.show()</code></pre>
 
+  <h2>Discussion</h2>
+  <p>
+    The idealized model assumes no air resistance and flat terrain. For more realistic predictions:
+  </p>
+  <ul>
+    <li>Incorporate drag force: proportional to velocity squared.</li>
+    <li>Model uneven terrain using elevation maps.</li>
+    <li>Account for wind forces or rotational effects (e.g., Magnus effect).</li>
+  </ul>
+
+  <h2>Conclusion</h2>
+  <p>
+    Understanding projectile motion's range dependency on launch angle provides fundamental insights into classical mechanics
+    and has broad real-world applications. Through simulation and theoretical analysis, we grasp both its elegance and limitations.
+  </p>
+</body>
+</html>
