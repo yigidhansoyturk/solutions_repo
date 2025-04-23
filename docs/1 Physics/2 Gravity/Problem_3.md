@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Physics Simulations</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pyodide@0.23.4/pyodide.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -47,17 +48,6 @@
     ul {
       margin-left: 1.5rem;
     }
-    pre {
-      background-color: #2d3748;
-      color: #f7fafc;
-      padding: 20px;
-      border-radius: 10px;
-      overflow-x: auto;
-      font-size: 0.95rem;
-    }
-    code {
-      font-family: 'Courier New', monospace;
-    }
     .plot {
       margin: 2rem 0;
     }
@@ -71,120 +61,89 @@
 </head>
 <body>
   <div class="container">
-    <h1>Trajectories of a Freely Released Payload Near Earth</h1>
+    <h1>Escape Velocities and Cosmic Velocities</h1>
 
     <h2>Motivation</h2>
     <p>
-      When a payload is released from a rocket in Earth's vicinity, it doesn't just fall straight down. Instead, depending on its speed, direction, and altitude, it might return to Earth, enter orbit, or even escape into space. Studying such trajectories enhances mission planning and highlights the richness of Newtonian gravity in space mechanics.
+      The concept of escape velocity is crucial for understanding the conditions required to leave a celestial body's gravitational influence. Extending this concept, the first, second, and third cosmic velocities define the thresholds for orbiting, escaping, and leaving a star system. These principles underpin modern space exploration, from launching satellites to interplanetary missions.
     </p>
 
     <h2>Theoretical Foundation</h2>
-    <h3>Newtonian Gravitation</h3>
-    <p>
-      According to Newton’s Law of Universal Gravitation, the gravitational force experienced by the payload is:
-    </p>
-    <p>$$ \vec{F} = -\frac{GMm}{r^2} \hat{r} $$</p>
-    <p>
-      Dividing both sides by mass \(m\), we get the acceleration:
-    </p>
-    <p>$$ \vec{a} = -\frac{GM}{r^2} \hat{r} $$</p>
-
-    <h3>Trajectory Classification</h3>
-    <p>
-      Based on the total mechanical energy, the motion falls into one of three categories:
-    </p>
-    <ul>
-      <li><strong>Elliptic Orbit:</strong> If total energy is negative.</li>
-      <li><strong>Parabolic Escape:</strong> If total energy is exactly zero.</li>
-      <li><strong>Hyperbolic Escape:</strong> If total energy is positive.</li>
-    </ul>
+    <h3>Cosmic Velocities Explained</h3>
+    <p><strong>First Cosmic Velocity (Orbital Velocity):</strong></p>
+    <p>\[ v_1 = \sqrt{\frac{GM}{r}} \]</p>
+    <p><strong>Second Cosmic Velocity (Escape Velocity):</strong></p>
+    <p>\[ v_2 = \sqrt{\frac{2GM}{r}} \]</p>
+    <p><strong>Third Cosmic Velocity (Interstellar Escape):</strong></p>
+    <p>This is the velocity required to leave the solar system and is influenced by the Sun's gravity.</p>
 
     <h2>Python Simulation</h2>
     <p>
-      We simulate the trajectory using Newtonian mechanics and visualize it using <code>matplotlib</code>.
+      We compute the velocities using Python and visualize them with a dynamic bar chart below.
     </p>
-    <pre><code>import numpy as np
-import matplotlib.pyplot as plt
+    <div id="cosmicVelocitiesPlot" class="plot"></div>
 
-G = 6.67430e-11  # Gravitational constant
-M = 5.972e24     # Mass of Earth (kg)
-R = 6.371e6      # Radius of Earth (m)
-
-# Initial conditions
-v0 = 7800                       # Initial speed (m/s)
-th = np.radians(45)             # Launch angle
-r0 = np.array([R, 0])
-v0_vec = v0 * np.array([np.cos(th), np.sin(th)])
-
-# Time steps
-dt = 1
-N = 5000
-r = np.zeros((N, 2))
-v = np.zeros((N, 2))
-r[0], v[0] = r0, v0_vec
-
-# Simulation loop
-for i in range(N - 1):
-    d = np.linalg.norm(r[i])
-    a = -G * M * r[i] / d**3
-    v[i + 1] = v[i] + a * dt
-    r[i + 1] = r[i] + v[i + 1] * dt
-
-# Plot results
-plt.figure(figsize=(8, 8))
-plt.plot(r[:,0]/1000, r[:,1]/1000, label='Payload Path')
-plt.plot(0, 0, 'ro', label='Earth')
-plt.title('Payload Trajectory Near Earth')
-plt.xlabel('X (km)')
-plt.ylabel('Y (km)')
-plt.axis('equal')
-plt.grid(True)
-plt.legend()
-plt.tight_layout()
-plt.savefig('payload_trajectory.png')
-plt.show()</code></pre>
-
-    <h2>Interactive Graph</h2>
-    <div id="trajectoryPlot" class="plot"></div>
-    <script>
-      Plotly.newPlot('trajectoryPlot', [{
-        x: [],
-        y: [],
-        mode: 'lines',
-        name: 'Trajectory',
-        line: {color: '#2b6cb0'}
-      }, {
-        x: [0],
-        y: [0],
-        mode: 'markers',
-        name: 'Earth',
-        marker: {size: 10, color: 'red'}
-      }], {
-        title: 'Simulated Payload Trajectory (Interactive)',
-        xaxis: {title: 'X (km)'},
-        yaxis: {title: 'Y (km)'},
-        margin: {t: 50},
-        showlegend: true
-      });
-    </script>
-
-    <h2>Implications and Future Work</h2>
+    <h2>Applications</h2>
     <ul>
-      <li>Used in satellite mission design and orbital deployment logistics.</li>
-      <li>Serves as foundation for controlled descent and re-entry modeling.</li>
-      <li>Base case for interplanetary mission trajectories with adjusted parameters.</li>
+      <li>Designing satellite orbits and interplanetary missions</li>
+      <li>Determining launch velocities for space travel</li>
+      <li>Understanding gravitational escape in different celestial environments</li>
     </ul>
 
-    <h3>Limitations</h3>
+    <h2>Discussion</h2>
     <ul>
-      <li>Does not account for atmospheric drag or Earth’s oblateness.</li>
-      <li>No modeling of multi-body gravitational interactions.</li>
+      <li><strong>Limitations:</strong> Assumes spherical symmetry and vacuum; neglects atmospheric drag and relativistic effects</li>
+      <li><strong>Extensions:</strong> Include effects of rotation, atmosphere, and gravity assists</li>
     </ul>
 
     <footer>
-      &copy; 2025 Physics Simulations | Trajectory Analysis Enhanced
+      &copy; 2025 Physics Simulations | Escape Velocities and Cosmic Dynamics
     </footer>
   </div>
+
+  <script type="text/python">
+import js
+import math
+G = 6.67430e-11
+bodies = [
+  {"name": "Earth", "M": 5.972e24, "r": 6.371e6},
+  {"name": "Mars", "M": 6.417e23, "r": 3.3895e6},
+  {"name": "Jupiter", "M": 1.898e27, "r": 6.9911e7},
+]
+names = [b["name"] for b in bodies]
+v1 = [math.sqrt(G * b["M"] / b["r"]) for b in bodies]
+v2 = [math.sqrt(2 * G * b["M"] / b["r"]) for b in bodies]
+js.Plotly.newPlot("cosmicVelocitiesPlot", [
+  {
+    "x": names,
+    "y": v1,
+    "name": "1st Cosmic Velocity",
+    "type": "bar",
+    "marker": {"color": "#4299e1"}
+  },
+  {
+    "x": names,
+    "y": v2,
+    "name": "2nd Cosmic Velocity",
+    "type": "bar",
+    "marker": {"color": "#ed8936"}
+  }
+], {
+  "title": "Cosmic Velocities of Celestial Bodies",
+  "xaxis": {"title": "Celestial Body"},
+  "yaxis": {"title": "Velocity (m/s)"},
+  "barmode": "group"
+})
+  </script>
+  <script>
+    async function main() {
+      const pyodide = await loadPyodide();
+      await pyodide.loadPackage(["matplotlib", "numpy"]);
+      await pyodide.runPythonAsync(document.querySelector('[type="text/python"]').textContent);
+    }
+    main();
+  </script>
+
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>
