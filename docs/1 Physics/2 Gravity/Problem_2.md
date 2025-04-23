@@ -35,6 +35,11 @@
       border-bottom: 2px solid #cbd5e0;
       padding-bottom: 0.3rem;
     }
+    h3 {
+      font-size: 1.5rem;
+      margin-top: 1.5rem;
+      color: #2c5282;
+    }
     p, ul {
       font-size: 1.125rem;
       line-height: 1.75;
@@ -54,7 +59,7 @@
       font-family: 'Courier New', monospace;
     }
     .plot {
-      margin-top: 2rem;
+      margin: 2rem 0;
     }
     footer {
       text-align: center;
@@ -74,54 +79,56 @@
     </p>
 
     <h2>Theoretical Foundation</h2>
+    <h3>Cosmic Velocities Explained</h3>
     <p><strong>First Cosmic Velocity (Orbital Velocity):</strong></p>
-    <p>
-      \[ v_1 = \sqrt{\frac{GM}{r}} \]
-    </p>
+    <p>\[ v_1 = \sqrt{\frac{GM}{r}} \]</p>
     <p><strong>Second Cosmic Velocity (Escape Velocity):</strong></p>
-    <p>
-      \[ v_2 = \sqrt{\frac{2GM}{r}} \]
-    </p>
+    <p>\[ v_2 = \sqrt{\frac{2GM}{r}} \]</p>
     <p><strong>Third Cosmic Velocity (Interstellar Escape):</strong></p>
-    <p>
-      It is the minimum velocity required to escape the gravitational field of the entire solar system.
-    </p>
+    <p>This is the velocity required to leave the solar system and is influenced by the Sun's gravity.</p>
 
     <h2>Python Simulation</h2>
-    <pre><code>import numpy as np
-import matplotlib.pyplot as plt
+    <p>
+      We compute the velocities using Python and visualize them with a dynamic bar chart.
+    </p>
+    <div id="cosmicVelocitiesPlot" class="plot"></div>
+    <script>
+      const G = 6.67430e-11;
+      const bodies = [
+        {name: 'Earth', M: 5.972e24, r: 6.371e6},
+        {name: 'Mars', M: 6.417e23, r: 3.3895e6},
+        {name: 'Jupiter', M: 1.898e27, r: 6.9911e7},
+      ];
 
-G = 6.67430e-11  # gravitational constant
-celestial_bodies = {
-    'Earth': {'M': 5.972e24, 'r': 6.371e6},
-    'Mars': {'M': 6.417e23, 'r': 3.3895e6},
-    'Jupiter': {'M': 1.898e27, 'r': 6.9911e7},
-}
+      const names = bodies.map(b => b.name);
+      const v1 = bodies.map(b => Math.sqrt(G * b.M / b.r));
+      const v2 = bodies.map(b => Math.sqrt(2 * G * b.M / b.r));
 
-bodies = list(celestial_bodies.keys())
-v1 = []
-v2 = []
+      const trace1 = {
+        x: names,
+        y: v1,
+        name: '1st Cosmic Velocity',
+        type: 'bar',
+        marker: {color: '#4299e1'}
+      };
 
-for body in bodies:
-    M = celestial_bodies[body]['M']
-    r = celestial_bodies[body]['r']
-    v1.append(np.sqrt(G * M / r))
-    v2.append(np.sqrt(2 * G * M / r))
+      const trace2 = {
+        x: names,
+        y: v2,
+        name: '2nd Cosmic Velocity',
+        type: 'bar',
+        marker: {color: '#ed8936'}
+      };
 
-x = np.arange(len(bodies))
-width = 0.35
+      const layout = {
+        title: 'Cosmic Velocities of Celestial Bodies',
+        xaxis: {title: 'Celestial Body'},
+        yaxis: {title: 'Velocity (m/s)'},
+        barmode: 'group'
+      };
 
-fig, ax = plt.subplots()
-ax.bar(x - width/2, v1, width, label='First Cosmic Velocity')
-ax.bar(x + width/2, v2, width, label='Second Cosmic Velocity')
-ax.set_xticks(x)
-ax.set_xticklabels(bodies)
-ax.set_ylabel('Velocity (m/s)')
-ax.set_title('Cosmic Velocities for Celestial Bodies')
-ax.legend()
-plt.tight_layout()
-plt.savefig('cosmic_velocities.png')
-plt.show()</code></pre>
+      Plotly.newPlot('cosmicVelocitiesPlot', [trace1, trace2], layout);
+    </script>
 
     <h2>Applications</h2>
     <ul>
