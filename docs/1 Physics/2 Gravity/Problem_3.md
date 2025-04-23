@@ -1,113 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Payload Trajectories Near Earth</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f4f8;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      max-width: 960px;
-      margin: auto;
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin: 40px auto;
+      max-width: 900px;
+      background-color: #fefefe;
+      color: #333;
+      line-height: 1.6;
     }
     h1, h2, h3 {
-      color: #2c5282;
+      color: #2c3e50;
     }
-    .plot {
-      margin-top: 2rem;
+    #plot {
+      margin-top: 30px;
+    }
+    label {
+      font-weight: bold;
+    }
+    input {
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Trajectories of a Freely Released Payload Near Earth</h1>
 
-    <h2>Motivation</h2>
-    <p>
-      When an object is released from a moving rocket near Earth, its trajectory depends on initial conditions and gravitational forces.
-      This scenario presents a rich problem, blending principles of orbital mechanics and numerical methods. Understanding the potential
-      trajectories is vital for space missions, such as deploying payloads or returning objects to Earth.
-    </p>
+  <h1>🚁 Trajectories of a Freely Released Payload Near Earth</h1>
 
-    <h2>Simulation: Payload Motion Under Gravity</h2>
-    <p>This simulation computes and displays the trajectory of a payload released at orbital altitude with a chosen speed and direction.</p>
-    <div id="trajectoryPlot" class="plot"></div>
+  <h2>🌍 Simulation Settings</h2>
+  <label for="velocity">Initial Speed (m/s):</label>
+  <input type="range" id="velocity" min="5000" max="12000" step="100" value="8000" oninput="updatePlot()" />
+  <span id="velocityValue">8000</span> m/s<br>
 
-    <h2>Discussion</h2>
-    <p>The shape of the trajectory (ellipse, parabola, or hyperbola) is determined by the payload's total mechanical energy.</p>
-  </div>
+  <label for="angle">Launch Angle (°):</label>
+  <input type="range" id="angle" min="0" max="90" step="1" value="45" oninput="updatePlot()" />
+  <span id="angleValue">45</span>°<br>
 
-  <script type="text/python" id="py-script">
-import js
-import numpy as np
+  <div id="plot"></div>
 
-# Constants
-G = 6.67430e-11
-M = 5.972e24
-R = 6.371e6
-
-# Initial conditions
-altitude = 400000  # 400 km above Earth's surface
-initial_speed = 7500  # in m/s
-angle_deg = 45
-angle_rad = np.radians(angle_deg)
-
-r0 = np.array([R + altitude, 0])
-v0 = initial_speed * np.array([np.cos(angle_rad), np.sin(angle_rad)])
-
-# Time setup
-dt = 1  # seconds
-N = 5000
-r = np.zeros((N, 2))
-v = np.zeros((N, 2))
-
-r[0] = r0
-v[0] = v0
-
-for i in range(N - 1):
-    d = np.linalg.norm(r[i])
-    a = -G * M * r[i] / d**3
-    v[i + 1] = v[i] + a * dt
-    r[i + 1] = r[i] + v[i + 1] * dt
-
-x_vals = r[:, 0] / 1000  # Convert to km
-y_vals = r[:, 1] / 1000
-
-js.Plotly.newPlot("trajectoryPlot", [
-  {
-    "x": x_vals.tolist(),
-    "y": y_vals.tolist(),
-    "type": "scatter",
-    "mode": "lines",
-    "name": "Trajectory",
-    "line": {"color": "#3182ce"}
-  }
-], {
-  "title": "Payload Trajectory Released Near Earth",
-  "xaxis": {"title": "X (km)"},
-  "yaxis": {"title": "Y (km)"},
-  "showlegend": true
-})
-  </script>
+  <h2>📘 What You're Seeing</h2>
+  <p>
+    This simulation models the 2D trajectory of a payload released from Earth, influenced only by gravity.
+    Depending on the velocity and launch angle, the payload might:
+  </p>
+  <ul>
+    <li>Re-enter Earth's surface (sub-orbital)</li>
+    <li>Enter a closed elliptical orbit</li>
+    <li>Escape Earth on a hyperbolic trajectory</li>
+  </ul>
 
   <script>
-    async function main() {
-      const pyodide = await loadPyodide();
-      await pyodide.loadPackage("numpy");
-      await pyodide.runPythonAsync(document.getElementById("py-script").textContent);
+    function updatePlot() {
+      const G = 6.67430e-11;
+      const M = 5.972e24;
+      const R = 6371000;
+      const dt = 1;
+      const N = 5000;
+
+      const v0 = parseFloat(document.getElementById('velocity').value);
+      const angleDeg = parseFloat(document.getElementById('angle').value);
+      document.getElementById('velocityValue').textContent = v0;
+      document.getElementById('angleValue').textContent = angleDeg;
+
+      const angleRad = angleDeg * Math.PI / 180;
+      let r = [R, 0];
+      let v = [v0 * Math.cos(angleRad), v0 * Math.sin(angleRad)];
+
+      const x = [], y = [];
+
+      for (let i = 0; i < N; i++) {
+        const dist = Math.sqrt(r[0]**2 + r[1]**2);
+        if (dist < R) break; // Hit Earth
+
+        x.push(r[0] / 1000); // km
+        y.push(r[1] / 1000);
+
+        const aMag = -G * M / (dist ** 3);
+        const a = [aMag * r[0], aMag * r[1]];
+
+        v = [v[0] + a[0] * dt, v[1] + a[1] * dt];
+        r = [r[0] + v[0] * dt, r[1] + v[1] * dt];
+      }
+
+      Plotly.newPlot('plot', [{
+        x: x,
+        y: y,
+        type: 'scatter',
+        mode: 'lines',
+        name: 'Payload Trajectory',
+        line: { color: 'royalblue' }
+      }, {
+        x: [0],
+        y: [0],
+        mode: 'markers',
+        marker: { size: 10, color: 'green' },
+        name: 'Earth Center'
+      }, {
+        type: 'scatter',
+        mode: 'lines',
+        x: Array.from({ length: 361 }, (_, i) => R * Math.cos(i * Math.PI / 180) / 1000),
+        y: Array.from({ length: 361 }, (_, i) => R * Math.sin(i * Math.PI / 180) / 1000),
+        line: { color: 'gray', dash: 'dot' },
+        name: 'Earth Surface'
+      }], {
+        title: 'Trajectory of Released Payload',
+        xaxis: { title: 'X (km)', scaleanchor: 'y' },
+        yaxis: { title: 'Y (km)' },
+        showlegend: true
+      });
     }
-    main();
+
+    updatePlot();
   </script>
+
 </body>
 </html>
