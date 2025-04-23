@@ -122,16 +122,31 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<title>Payload Trajectories Near Earth</title>
+<title>🌊 Wave Interference Simulation</title>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: start;
+      background-color: #f9f9f9;
       font-family: Arial, sans-serif;
-      margin: 40px auto;
-      max-width: 900px;
-      background-color: #fefefe;
       color: #333;
-      line-height: 1.6;
+    }
+    .container {
+      margin: 40px 0;
+      width: 95%;
+      max-width: 960px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
     h1, h2, h3 {
       color: #2c3e50;
@@ -145,110 +160,156 @@
     input {
       margin-bottom: 10px;
     }
+    button {
+      margin: 10px 5px 20px 0;
+      padding: 6px 12px;
+      font-size: 14px;
+      border: none;
+      background-color: #3498db;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    pre {
+      background-color: #eee;
+      padding: 10px;
+      overflow-x: auto;
+      border-radius: 6px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .controls label {
+      margin-right: 6px;
+    }
   </style>
 </head>
 <body>
-<h1>🚁 Trajectories of a Freely Released Payload Near Earth</h1>
-<h2>🔍 Background &amp; Motivation</h2>
+<div class="container">
+<h1>🌊 Interference Patterns from Multiple Wave Sources</h1>
+<h2>📖 What’s Going On Here?</h2>
 <p>
-    When a payload is released from a moving spacecraft near Earth, it doesn't just fall downward. Instead, its motion is influenced by the velocity of release and Earth’s gravitational pull. This results in a variety of paths:
-  </p>
+      Multiple circular wave sources on a flat surface create fascinating interference patterns. When these waves overlap,
+      they interact based on the <strong>superposition principle</strong> — adding their amplitudes at every point in space.
+    </p>
+<pre><code>η(x, y, t) = (A / √r) * cos(k * r - ω * t)</code></pre>
+<p>
+      This formula means waves decrease in amplitude as they travel (1/√r), oscillate with distance and time,
+      and interact with each other. You'll see areas of:
+    </p>
 <ul>
-<li><strong>Sub-orbital Trajectories:</strong> Payloads that fall back to Earth after a short arc.</li>
-<li><strong>Orbital Trajectories:</strong> Payloads that are released with the right speed and direction to enter stable orbits around Earth.</li>
-<li><strong>Escape Trajectories:</strong> Payloads moving fast enough to break free from Earth’s gravity, following a parabolic or hyperbolic path.</li>
+<li><strong>Constructive interference</strong> (bright spots)</li>
+<li><strong>Destructive interference</strong> (dark spots)</li>
 </ul>
-<p>
-    Understanding these trajectories is essential in satellite deployment, designing reentry capsules, or planning interplanetary missions. These paths depend on physical laws such as Newton's law of gravitation:
-  </p>
-<pre><code>F = G * M * m / r²</code></pre>
-<p>
-    And Newton’s second law:
-  </p>
-<pre><code>F = m * a</code></pre>
-<p>
-    Combined, they determine how the object accelerates due to Earth’s gravity. Simulating these numerically with simple time steps helps us visualize realistic space mechanics.
-  </p>
-<h2>🌍 Simulation Settings</h2>
-<label for="velocity">Initial Speed (m/s):</label>
-<input id="velocity" max="12000" min="5000" oninput="updatePlot()" step="100" type="range" value="8000"/>
-<span id="velocityValue">8000</span> m/s<br/>
-<label for="angle">Launch Angle (°):</label>
-<input id="angle" max="90" min="0" oninput="updatePlot()" step="1" type="range" value="45"/>
-<span id="angleValue">45</span>°<br/>
+<h2>🛠️ Controls</h2>
+<div class="controls">
+<label for="numSources">Number of Sources:</label>
+<input id="numSources" max="12" min="2" oninput="updateSettings()" step="1" type="range" value="6"/>
+<span id="numSourcesValue">6</span>
+<label for="amplitude">Amplitude:</label>
+<input id="amplitude" max="2.0" min="0.5" oninput="updateSettings()" step="0.1" type="range" value="1.0"/>
+<span id="amplitudeValue">1.0</span>
+<button onclick="toggleAnimation()">⏯️ Pause/Resume</button>
+<button onclick="exportImage()">📸 Export as PNG</button>
+</div>
 <div id="plot"></div>
-<h2>📘 What You're Seeing</h2>
-<p>
-    This simulation models the 2D trajectory of a payload released from Earth, influenced only by gravity.
-    Depending on the velocity and launch angle, the payload might:
-  </p>
-<ul>
-<li>Re-enter Earth's surface (sub-orbital)</li>
-<li>Enter a closed elliptical orbit</li>
-<li>Escape Earth on a hyperbolic trajectory</li>
-</ul>
+</div>
 <script>
-    function updatePlot() {
-      const G = 6.67430e-11;
-      const M = 5.972e24;
-      const R = 6371000;
-      const dt = 1;
-      const N = 5000;
+    const size = 100;
+    const res = 100;
+    const λ = 10;
+    const k = 2 * Math.PI / λ;
+    const f = 1;
+    const ω = 2 * Math.PI * f;
+    const x = Array.from({ length: res }, (_, i) => -size / 2 + i * size / res);
+    const y = Array.from({ length: res }, (_, j) => -size / 2 + j * size / res);
+    let t = 0;
+    let interval = null;
+    let isPaused = false;
 
-      const v0 = parseFloat(document.getElementById('velocity').value);
-      const angleDeg = parseFloat(document.getElementById('angle').value);
-      document.getElementById('velocityValue').textContent = v0;
-      document.getElementById('angleValue').textContent = angleDeg;
-
-      const angleRad = angleDeg * Math.PI / 180;
-      let r = [R, 0];
-      let v = [v0 * Math.cos(angleRad), v0 * Math.sin(angleRad)];
-
-      const x = [], y = [];
-
-      for (let i = 0; i < N; i++) {
-        const dist = Math.sqrt(r[0]**2 + r[1]**2);
-        if (dist < R) break; // Hit Earth
-
-        x.push(r[0] / 1000); // km
-        y.push(r[1] / 1000);
-
-        const aMag = -G * M / (dist ** 3);
-        const a = [aMag * r[0], aMag * r[1]];
-
-        v = [v[0] + a[0] * dt, v[1] + a[1] * dt];
-        r = [r[0] + v[0] * dt, r[1] + v[1] * dt];
+    function generateSources(n) {
+      const R = 20;
+      const sources = [];
+      for (let i = 0; i < n; i++) {
+        const θ = 2 * Math.PI * i / n;
+        sources.push([R * Math.cos(θ), R * Math.sin(θ)]);
       }
-
-      Plotly.newPlot('plot', [{
-        x: x,
-        y: y,
-        type: 'scatter',
-        mode: 'lines',
-        name: 'Payload Trajectory',
-        line: { color: 'royalblue' }
-      }, {
-        x: [0],
-        y: [0],
-        mode: 'markers',
-        marker: { size: 10, color: 'green' },
-        name: 'Earth Center'
-      }, {
-        type: 'scatter',
-        mode: 'lines',
-        x: Array.from({ length: 361 }, (_, i) => R * Math.cos(i * Math.PI / 180) / 1000),
-        y: Array.from({ length: 361 }, (_, i) => R * Math.sin(i * Math.PI / 180) / 1000),
-        line: { color: 'gray', dash: 'dot' },
-        name: 'Earth Surface'
-      }], {
-        title: 'Trajectory of Released Payload',
-        xaxis: { title: 'X (km)', scaleanchor: 'y' },
-        yaxis: { title: 'Y (km)' },
-        showlegend: true
-      });
+      return sources;
     }
 
-    updatePlot();
+    function calculateFrame(A, sources, t) {
+      const z = [];
+      for (let j = 0; j < y.length; j++) {
+        const row = [];
+        for (let i = 0; i < x.length; i++) {
+          let sum = 0;
+          for (const [sx, sy] of sources) {
+            const dx = x[i] - sx;
+            const dy = y[j] - sy;
+            const r = Math.sqrt(dx * dx + dy * dy) + 0.001;
+            sum += (A / Math.sqrt(r)) * Math.cos(k * r - ω * t);
+          }
+          row.push(sum);
+        }
+        z.push(row);
+      }
+      return z;
+    }
+
+    function updateSettings() {
+      const N = parseInt(document.getElementById("numSources").value);
+      const A = parseFloat(document.getElementById("amplitude").value);
+      document.getElementById("numSourcesValue").textContent = N;
+      document.getElementById("amplitudeValue").textContent = A.toFixed(1);
+      startAnimation(N, A);
+    }
+
+    function startAnimation(N, A) {
+      const sources = generateSources(N);
+      if (interval) clearInterval(interval);
+      interval = setInterval(() => {
+        if (isPaused) return;
+        const z = calculateFrame(A, sources, t);
+        Plotly.newPlot('plot', [{
+          z: z,
+          x: x,
+          y: y,
+          type: 'contour',
+          contours: { coloring: 'heatmap' },
+          colorbar: { title: 'Amplitude' }
+        }], {
+          title: `Wave Interference with ${N} Sources`,
+          xaxis: { title: 'X', scaleanchor: 'y' },
+          yaxis: { title: 'Y' }
+        });
+        t += 0.1;
+      }, 100);
+    }
+
+    function toggleAnimation() {
+      isPaused = !isPaused;
+    }
+
+    function exportImage() {
+      Plotly.toImage(document.getElementById('plot'), { format: 'png', height: 600, width: 700 })
+        .then(dataUrl => {
+          const a = document.createElement('a');
+          a.href = dataUrl;
+          a.download = 'wave_interference.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
+    }
+
+    updateSettings();
   </script>
 </body>
 </html>
