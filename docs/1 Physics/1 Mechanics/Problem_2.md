@@ -11,31 +11,33 @@
       font-family: 'Roboto', sans-serif;
       margin: 0;
       padding: 0;
-      background: linear-gradient(to right, #f0f4f8, #d9e2ec);
-      color: #333;
+      background: linear-gradient(to right, #eef2f7, #d9e2ec);
+      color: #2d3748;
     }
     .container {
       max-width: 960px;
-      margin: 0 auto;
-      padding: 40px 20px;
+      margin: 40px auto;
+      padding: 40px;
       background-color: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
     h1 {
-      font-size: 2.8rem;
+      font-size: 3rem;
       color: #1a202c;
       text-align: center;
       margin-bottom: 1rem;
     }
     h2 {
-      font-size: 1.8rem;
+      font-size: 2rem;
       margin-top: 2rem;
       color: #2b6cb0;
+      border-bottom: 2px solid #cbd5e0;
+      padding-bottom: 0.3rem;
     }
     p, ul {
-      font-size: 1.1rem;
-      line-height: 1.7;
+      font-size: 1.125rem;
+      line-height: 1.75;
     }
     ul {
       margin-left: 1.5rem;
@@ -43,9 +45,10 @@
     pre {
       background-color: #2d3748;
       color: #f7fafc;
-      padding: 15px;
-      border-radius: 8px;
+      padding: 20px;
+      border-radius: 10px;
       overflow-x: auto;
+      font-size: 0.95rem;
     }
     code {
       font-family: 'Courier New', monospace;
@@ -60,23 +63,32 @@
 </head>
 <body>
   <div class="container">
-    <h1>Dynamics of a Forced Damped Pendulum</h1>
+    <h1>Investigating the Dynamics of a Forced Damped Pendulum</h1>
+
+    <h2>Motivation</h2>
+    <p>
+      The forced damped pendulum is a captivating example of a physical system with intricate behavior resulting from the interplay of damping, restoring forces, and external driving forces. By introducing both damping and external periodic forcing, the system demonstrates a transition from simple harmonic motion to a rich spectrum of dynamics, including resonance, chaos, and quasiperiodic behavior.
+    </p>
+    <p>
+      These phenomena are a foundation for understanding complex real-world systems, such as driven oscillators, climate systems, and mechanical structures under periodic stress. By varying the parameters of the external force—amplitude and frequency—a diverse class of solutions can be observed, highlighting synchronized oscillations, chaotic motion, and resonance phenomena.
+    </p>
 
     <h2>Theoretical Foundation</h2>
-    <p>The motion of a forced damped pendulum is described by the second-order differential equation:</p>
+    <p>The motion of a forced damped pendulum is governed by the differential equation:</p>
     <pre><code>d²θ/dt² + b*dθ/dt + ω₀²*sin(θ) = A*cos(ω*t)</code></pre>
-    <p>
-      Where:
-      <ul>
-        <li><strong>b</strong>: damping coefficient</li>
-        <li><strong>ω₀</strong>: natural angular frequency</li>
-        <li><strong>A</strong>: amplitude of the external periodic force</li>
-        <li><strong>ω</strong>: frequency of the driving force</li>
-      </ul>
-    </p>
-    <p>
-      When the angle is small, the equation can be linearized using <code>sin(θ) ≈ θ</code>, simplifying the system into a driven harmonic oscillator. The most intriguing behavior, however, emerges when nonlinearity and forcing interact, leading to complex dynamics including resonance and chaos.
-    </p>
+    <ul>
+      <li><strong>b</strong>: damping coefficient</li>
+      <li><strong>ω₀</strong>: natural angular frequency</li>
+      <li><strong>A</strong>: amplitude of the external periodic force</li>
+      <li><strong>ω</strong>: driving frequency</li>
+    </ul>
+    <p>For small angles, <code>sin(θ) ≈ θ</code>, leading to a linearized form suitable for analytical solutions. However, full dynamics require numerical exploration due to nonlinearity and external forcing.</p>
+
+    <h2>Analysis of Dynamics</h2>
+    <ul>
+      <li>Effect of damping coefficient, driving amplitude, and frequency on the pendulum's behavior</li>
+      <li>Transition between regular oscillations and chaotic motion</li>
+    </ul>
 
     <h2>Python Simulation</h2>
     <pre><code>import numpy as np
@@ -93,7 +105,10 @@ omega0 = 1.5
 A = 1.2
 omega = 2.0
 
-sol = solve_ivp(pendulum, [0, 40], [0.1, 0], args=(b, omega0, A, omega), t_eval=np.linspace(0, 40, 1000))
+t_span = [0, 40]
+t_eval = np.linspace(*t_span, 1000)
+
+sol = solve_ivp(pendulum, t_span, [0.1, 0], args=(b, omega0, A, omega), t_eval=t_eval)
 
 plt.plot(sol.t, sol.y[0])
 plt.title("Forced Damped Pendulum")
@@ -103,35 +118,33 @@ plt.grid(True)
 plt.show()</code></pre>
 
     <h2>Practical Applications</h2>
-    <p>This model is applicable in a range of systems, including:</p>
     <ul>
-      <li>Energy harvesting from mechanical vibrations</li>
-      <li>Vibration analysis of suspension bridges and buildings</li>
-      <li>Driven electrical circuits like RLC systems</li>
+      <li>Energy harvesting in mechanical and piezoelectric systems</li>
+      <li>Bridge and building resonance analysis</li>
+      <li>Driven RLC circuits in electronics</li>
     </ul>
 
-    <h2>Model Limitations and Extensions</h2>
+    <h2>Limitations and Extensions</h2>
     <p><strong>Limitations:</strong></p>
     <ul>
-      <li>Assumes linear damping</li>
-      <li>Uses a purely sinusoidal driving force</li>
-      <li>Does not account for structural or environmental nonlinearity</li>
+      <li>Linear damping approximation</li>
+      <li>Sinusoidal driving force only</li>
+      <li>Does not account for external noise or stochastic effects</li>
     </ul>
     <p><strong>Possible Extensions:</strong></p>
     <ul>
-      <li>Introduce nonlinear damping or noise</li>
-      <li>Incorporate arbitrary or non-periodic driving functions</li>
-      <li>Simulate chaotic behavior using bifurcation diagrams and Poincaré maps</li>
+      <li>Nonlinear damping (e.g., quadratic or Coulomb friction)</li>
+      <li>Non-periodic or real-world data-driven forcing</li>
+      <li>Visualization using bifurcation diagrams and Poincaré sections</li>
     </ul>
 
-    <h2>Visual Dynamics Exploration</h2>
+    <h2>Advanced Visualizations</h2>
     <p>
-      Complex dynamical behaviors can be visualized using phase portraits and Poincaré sections.
-      These tools reveal the structure of chaotic and periodic motion, enhancing our understanding of transition behaviors.
+      Phase portraits and Poincaré maps reveal the complex landscape of motion—transitions from order to chaos and back. Bifurcation diagrams highlight how varying a single parameter leads to dramatically different dynamics.
     </p>
 
     <footer>
-      &copy; 2025 Physics Simulations | Forced Damped Pendulum
+      &copy; 2025 Physics Simulations | Investigating Forced Damped Pendulum Dynamics
     </footer>
   </div>
 </body>
