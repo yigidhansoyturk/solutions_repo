@@ -125,48 +125,77 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Forced Damped Pendulum</title>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&amp;display=swap" rel="stylesheet"/>
 <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 40px auto;
-      max-width: 900px;
-      background-color: #fefefe;
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #f0f4f8, #d9e2ec);
       color: #333;
-      line-height: 1.6;
     }
-    h1, h2 {
-      color: #2c3e50;
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      font-size: 2.8rem;
+      color: #1a202c;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      color: #2b6cb0;
+    }
+    p, ul {
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+    ul {
+      margin-left: 1.5rem;
     }
     pre {
-      background-color: #f0f0f0;
-      padding: 10px;
+      background-color: #2d3748;
+      color: #f7fafc;
+      padding: 15px;
+      border-radius: 8px;
       overflow-x: auto;
     }
     code {
-      font-family: Consolas, monospace;
+      font-family: 'Courier New', monospace;
     }
-    .slider {
-      width: 100%;
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #718096;
     }
   </style>
 </head>
 <body>
+<div class="container">
 <h1>Dynamics of a Forced Damped Pendulum</h1>
 <h2>Theoretical Foundation</h2>
-<p>The equation of motion for a forced damped pendulum is:</p>
+<p>The motion of a forced damped pendulum is described by the second-order differential equation:</p>
 <pre><code>d²θ/dt² + b*dθ/dt + ω₀²*sin(θ) = A*cos(ω*t)</code></pre>
 <p>
-    Where:
-    <ul>
-<li><strong>b</strong>: Damping coefficient</li>
-<li><strong>ω₀</strong>: Natural frequency</li>
-<li><strong>A</strong>: Driving force amplitude</li>
-<li><strong>ω</strong>: Driving force frequency</li>
+      Where:
+      <ul>
+<li><strong>b</strong>: damping coefficient</li>
+<li><strong>ω₀</strong>: natural angular frequency</li>
+<li><strong>A</strong>: amplitude of the external periodic force</li>
+<li><strong>ω</strong>: frequency of the driving force</li>
 </ul>
 </p>
 <p>
-    For small θ, we can approximate sin(θ) ≈ θ and analyze resonance conditions where ω ≈ ω₀.
-  </p>
+      When the angle is small, the equation can be linearized using <code>sin(θ) ≈ θ</code>, simplifying the system into a driven harmonic oscillator. The most intriguing behavior, however, emerges when nonlinearity and forcing interact, leading to complex dynamics including resonance and chaos.
+    </p>
 <h2>Python Simulation</h2>
 <pre><code>import numpy as np
 import matplotlib.pyplot as plt
@@ -191,31 +220,34 @@ plt.ylabel("Angle (rad)")
 plt.grid(True)
 plt.show()</code></pre>
 <h2>Practical Applications</h2>
-<p>
-    This system models real-world systems such as:
-    <ul>
-<li>Energy harvesting devices</li>
-<li>Suspension bridges under wind load</li>
-<li>Driven RLC electrical circuits</li>
+<p>This model is applicable in a range of systems, including:</p>
+<ul>
+<li>Energy harvesting from mechanical vibrations</li>
+<li>Vibration analysis of suspension bridges and buildings</li>
+<li>Driven electrical circuits like RLC systems</li>
 </ul>
-</p>
 <h2>Model Limitations and Extensions</h2>
-<p>
-    Limitations:
-    <ul>
-<li>Linear damping assumption</li>
-<li>Pure sinusoidal forcing only</li>
-<li>No structural or nonlinear damping effects included</li>
+<p><strong>Limitations:</strong></p>
+<ul>
+<li>Assumes linear damping</li>
+<li>Uses a purely sinusoidal driving force</li>
+<li>Does not account for structural or environmental nonlinearity</li>
 </ul>
-    Extensions:
-    <ul>
-<li>Nonlinear damping and random noise</li>
-<li>Custom driving forces and terrains</li>
-<li>Exploration of chaotic behavior through bifurcation and Poincaré analysis</li>
+<p><strong>Possible Extensions:</strong></p>
+<ul>
+<li>Introduce nonlinear damping or noise</li>
+<li>Incorporate arbitrary or non-periodic driving functions</li>
+<li>Simulate chaotic behavior using bifurcation diagrams and Poincaré maps</li>
 </ul>
-</p>
 <h2>Visual Dynamics Exploration</h2>
-<p>Graphical tools such as phase portraits, bifurcation diagrams, and Poincaré sections are valuable for analyzing transitions to chaos in the system.</p>
+<p>
+      Complex dynamical behaviors can be visualized using phase portraits and Poincaré sections.
+      These tools reveal the structure of chaotic and periodic motion, enhancing our understanding of transition behaviors.
+    </p>
+<footer>
+      © 2025 Physics Simulations | Forced Damped Pendulum
+    </footer>
+</div>
 </body>
 </html>
 </div>
