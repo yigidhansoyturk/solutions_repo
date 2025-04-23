@@ -170,6 +170,9 @@
       border-radius: 5px;
       cursor: pointer;
     }
+    #circuitGraph {
+      margin-top: 30px;
+    }
   </style>
 </head>
 <body>
@@ -206,6 +209,7 @@ Return final edge between source and sink as equivalent resistance
 <li>Node B → C (resistor: 200 Ω)</li>
 <li>Node A → C (parallel resistor: 300 Ω)</li>
 </ul>
+<div id="circuitGraph"></div>
 <button onclick="calculateResistance()">💡 Compute Equivalent Resistance</button>
 <p id="result"></p>
 <h3>📊 Efficiency &amp; Improvements</h3>
@@ -229,6 +233,55 @@ Return final edge between source and sink as equivalent resistance
       const parallel = 1 / (1 / R3 + 1 / seriesPath);
       document.getElementById("result").innerText = `Total Equivalent Resistance: ${parallel.toFixed(2)} Ω`;
     }
+
+    const nodes = [
+      { id: 'A', x: 0, y: 1 },
+      { id: 'B', x: 1, y: 1 },
+      { id: 'C', x: 2, y: 0.5 },
+    ];
+
+    const edges = [
+      { from: 'A', to: 'B', value: 100 },
+      { from: 'B', to: 'C', value: 200 },
+      { from: 'A', to: 'C', value: 300 },
+    ];
+
+    const edgeTraces = edges.map(edge => {
+      const fromNode = nodes.find(n => n.id === edge.from);
+      const toNode = nodes.find(n => n.id === edge.to);
+      return {
+        type: 'scatter',
+        x: [fromNode.x, toNode.x],
+        y: [fromNode.y, toNode.y],
+        mode: 'lines+text',
+        line: { width: 2 },
+        text: [`${edge.value}Ω`],
+        textposition: 'top center',
+        hoverinfo: 'none',
+        showlegend: false
+      };
+    });
+
+    const nodeTrace = {
+      type: 'scatter',
+      mode: 'markers+text',
+      x: nodes.map(n => n.x),
+      y: nodes.map(n => n.y),
+      marker: { size: 16, color: '#2980b9' },
+      text: nodes.map(n => n.id),
+      textposition: 'bottom center',
+      hoverinfo: 'text'
+    };
+
+    const layout = {
+      title: 'Resistor Network Visualization',
+      margin: { t: 50 },
+      xaxis: { visible: false },
+      yaxis: { visible: false },
+      height: 400
+    };
+
+    Plotly.newPlot('circuitGraph', [...edgeTraces, nodeTrace], layout);
   </script>
 </body>
 </html>
