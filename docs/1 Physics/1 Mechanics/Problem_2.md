@@ -34,7 +34,7 @@
 
   <h1>Dynamics of a Forced Damped Pendulum</h1>
 
-  <h2>1. Theoretical Foundation</h2>
+  <h2>Theoretical Foundation</h2>
   <p>The equation of motion for a forced damped pendulum is:</p>
   <pre><code>d²θ/dt² + b*dθ/dt + ω₀²*sin(θ) = A*cos(ω*t)</code></pre>
   <p>
@@ -50,7 +50,7 @@
     For small θ, we can approximate sin(θ) ≈ θ and analyze resonance conditions where ω ≈ ω₀.
   </p>
 
-  <h2>2. Python Simulation (Notebook Ready)</h2>
+  <h2>Python Simulation</h2>
   <pre><code>import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
@@ -74,34 +74,34 @@ plt.ylabel("Angle (rad)")
 plt.grid(True)
 plt.show()</code></pre>
 
-  <h2>3. Practical Applications</h2>
+  <h2>Practical Applications</h2>
   <p>
-    This system models real-world systems like:
+    This system models real-world systems such as:
     <ul>
-      <li>Energy harvesters</li>
+      <li>Energy harvesting devices</li>
       <li>Suspension bridges under wind load</li>
       <li>Driven RLC electrical circuits</li>
     </ul>
   </p>
 
-  <h2>4. Discussion and Extensions</h2>
+  <h2>Model Limitations and Extensions</h2>
   <p>
-    Limitations include:
+    Limitations:
     <ul>
-      <li>Neglecting nonlinear damping</li>
-      <li>Assuming a purely sinusoidal force</li>
-      <li>Numerical stiffness for chaotic regimes</li>
+      <li>Linear damping assumption</li>
+      <li>Pure sinusoidal forcing only</li>
+      <li>No structural or nonlinear damping effects included</li>
     </ul>
     Extensions:
     <ul>
-      <li>Add drag proportional to ω²</li>
-      <li>Use a non-sinusoidal driving function</li>
-      <li>Explore bifurcation diagrams and chaos</li>
+      <li>Nonlinear damping and random noise</li>
+      <li>Custom driving forces and terrains</li>
+      <li>Exploration of chaotic behavior through bifurcation and Poincaré analysis</li>
     </ul>
   </p>
 
-  <h2>5. Visual Analysis (To be added via notebook)</h2>
-  <p>Visualizations such as phase portraits, Poincaré sections, and bifurcation diagrams can be generated with Python for deeper insight into chaotic behavior.</p>
+  <h2>Visual Dynamics Exploration</h2>
+  <p>Graphical tools such as phase portraits, bifurcation diagrams, and Poincaré sections are valuable for analyzing transitions to chaos in the system.</p>
 
 </body>
 </html>
