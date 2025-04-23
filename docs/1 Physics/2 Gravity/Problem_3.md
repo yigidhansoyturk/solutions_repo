@@ -104,41 +104,58 @@
   <script type="text/python">
 import js
 import math
+import numpy as np
+
+# Gravitational constant and simulation parameters
 G = 6.67430e-11
-bodies = [
-  {"name": "Earth", "M": 5.972e24, "r": 6.371e6},
-  {"name": "Mars", "M": 6.417e23, "r": 3.3895e6},
-  {"name": "Jupiter", "M": 1.898e27, "r": 6.9911e7},
-]
-names = [b["name"] for b in bodies]
-v1 = [math.sqrt(G * b["M"] / b["r"]) for b in bodies]
-v2 = [math.sqrt(2 * G * b["M"] / b["r"]) for b in bodies]
+M = 5.972e24  # Mass of Earth (kg)
+R = 6.371e6   # Radius of Earth (m)
+v0 = 7800     # Initial speed (m/s)
+th = np.radians(45)  # Launch angle
+
+# Initial position and velocity vectors
+r0 = np.array([R, 0])
+v0_vec = v0 * np.array([np.cos(th), np.sin(th)])
+
+# Time steps
+dt = 1
+N = 5000
+r = np.zeros((N, 2))
+v = np.zeros((N, 2))
+r[0], v[0] = r0, v0_vec
+
+# Simulation loop for trajectory
+for i in range(N - 1):
+    d = np.linalg.norm(r[i])
+    a = -G * M * r[i] / d**3
+    v[i + 1] = v[i] + a * dt
+    r[i + 1] = r[i] + v[i + 1] * dt
+
+# Plot trajectory data using Plotly
+trajectory_x = r[:, 0] / 1000  # Convert to kilometers
+trajectory_y = r[:, 1] / 1000  # Convert to kilometers
+
 js.Plotly.newPlot("cosmicVelocitiesPlot", [
   {
-    "x": names,
-    "y": v1,
-    "name": "1st Cosmic Velocity",
-    "type": "bar",
-    "marker": {"color": "#4299e1"}
-  },
-  {
-    "x": names,
-    "y": v2,
-    "name": "2nd Cosmic Velocity",
-    "type": "bar",
-    "marker": {"color": "#ed8936"}
+    "x": trajectory_x.tolist(),
+    "y": trajectory_y.tolist(),
+    "type": "scatter",
+    "mode": "lines",
+    "name": "Payload Trajectory",
+    "line": {"color": "#4299e1", "width": 2}
   }
 ], {
-  "title": "Cosmic Velocities of Celestial Bodies",
-  "xaxis": {"title": "Celestial Body"},
-  "yaxis": {"title": "Velocity (m/s)"},
-  "barmode": "group"
+  "title": "Payload Trajectory Near Earth",
+  "xaxis": {"title": "X (km)"},
+  "yaxis": {"title": "Y (km)"},
+  "showlegend": true
 })
   </script>
+  
   <script>
     async function main() {
       const pyodide = await loadPyodide();
-      await pyodide.loadPackage(["matplotlib", "numpy"]);
+      await pyodide.loadPackage(["matplotlib", "numpy", "plotly"]);
       await pyodide.runPythonAsync(document.querySelector('[type="text/python"]').textContent);
     }
     main();
