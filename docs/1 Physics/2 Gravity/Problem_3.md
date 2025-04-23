@@ -3,143 +3,111 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Physics Simulations</title>
+  <title>Payload Trajectories Near Earth</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Roboto', sans-serif;
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
       margin: 0;
-      padding: 0;
-      background: linear-gradient(to right, #eef2f7, #d9e2ec);
-      color: #2d3748;
+      padding: 20px;
     }
     .container {
       max-width: 960px;
-      margin: 40px auto;
+      margin: auto;
+      background: white;
       padding: 40px;
-      background-color: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
-    h1 {
-      font-size: 3rem;
-      color: #1a202c;
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    h2 {
-      font-size: 2rem;
-      margin-top: 2rem;
-      color: #2b6cb0;
-      border-bottom: 2px solid #cbd5e0;
-      padding-bottom: 0.3rem;
+    h1, h2, h3 {
+      color: #2c5282;
     }
     .plot {
       margin-top: 2rem;
-    }
-    footer {
-      text-align: center;
-      margin-top: 3rem;
-      font-size: 0.9rem;
-      color: #718096;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Escape Velocities and Cosmic Velocities</h1>
+    <h1>Trajectories of a Freely Released Payload Near Earth</h1>
 
     <h2>Motivation</h2>
-    <p>The concept of escape velocity is crucial for understanding the conditions required to leave a celestial body's gravitational influence. Extending this concept, the first, second, and third cosmic velocities define the thresholds for orbiting, escaping, and leaving a star system. These principles underpin modern space exploration, from launching satellites to interplanetary missions.</p>
+    <p>
+      When an object is released from a moving rocket near Earth, its trajectory depends on initial conditions and gravitational forces.
+      This scenario presents a rich problem, blending principles of orbital mechanics and numerical methods. Understanding the potential
+      trajectories is vital for space missions, such as deploying payloads or returning objects to Earth.
+    </p>
 
-    <h2>Theoretical Foundation</h2>
-    <p><strong>First Cosmic Velocity:</strong> \( v_1 = \sqrt{\frac{GM}{r}} \)</p>
-    <p><strong>Second Cosmic Velocity:</strong> \( v_2 = \sqrt{\frac{2GM}{r}} \)</p>
-    <p><strong>Third Cosmic Velocity:</strong> Enough to escape the solar system, overcoming the Sun’s gravity.</p>
-
-    <h2>Python Simulation</h2>
-    <p>We compute the velocities using Python and visualize them with a dynamic bar chart below.</p>
-    <div id="cosmicVelocitiesPlot" class="plot"></div>
-
-    <h2>Applications</h2>
-    <ul>
-      <li>Designing satellite orbits and interplanetary missions</li>
-      <li>Determining launch velocities for space travel</li>
-      <li>Understanding gravitational escape in different celestial environments</li>
-    </ul>
+    <h2>Simulation: Payload Motion Under Gravity</h2>
+    <p>This simulation computes and displays the trajectory of a payload released at orbital altitude with a chosen speed and direction.</p>
+    <div id="trajectoryPlot" class="plot"></div>
 
     <h2>Discussion</h2>
-    <ul>
-      <li><strong>Limitations:</strong> Assumes spherical symmetry and vacuum; neglects atmospheric drag and relativistic effects</li>
-      <li><strong>Extensions:</strong> Include effects of rotation, atmosphere, and gravity assists</li>
-    </ul>
-
-    <footer>
-      &copy; 2025 Physics Simulations | Escape Velocities and Cosmic Dynamics
-    </footer>
+    <p>The shape of the trajectory (ellipse, parabola, or hyperbola) is determined by the payload's total mechanical energy.</p>
   </div>
 
-  <!-- PyScript code block -->
   <script type="text/python" id="py-script">
 import js
-import math
+import numpy as np
 
 # Constants
 G = 6.67430e-11
+M = 5.972e24
+R = 6.371e6
 
-# Data for celestial bodies
-bodies = [
-    {"name": "Earth", "M": 5.972e24, "r": 6.371e6},
-    {"name": "Mars", "M": 6.417e23, "r": 3.3895e6},
-    {"name": "Jupiter", "M": 1.898e27, "r": 6.9911e7},
-]
+# Initial conditions
+altitude = 400000  # 400 km above Earth's surface
+initial_speed = 7500  # in m/s
+angle_deg = 45
+angle_rad = np.radians(angle_deg)
 
-# Calculate velocities
-names = [b["name"] for b in bodies]
-v1 = [math.sqrt(G * b["M"] / b["r"]) for b in bodies]
-v2 = [math.sqrt(2 * G * b["M"] / b["r"]) for b in bodies]
+r0 = np.array([R + altitude, 0])
+v0 = initial_speed * np.array([np.cos(angle_rad), np.sin(angle_rad)])
 
-# Plot using JavaScript Plotly
-js.Plotly.newPlot("cosmicVelocitiesPlot", [
-    {
-        "x": names,
-        "y": v1,
-        "name": "1st Cosmic Velocity",
-        "type": "bar",
-        "marker": {"color": "#4299e1"}
-    },
-    {
-        "x": names,
-        "y": v2,
-        "name": "2nd Cosmic Velocity",
-        "type": "bar",
-        "marker": {"color": "#ed8936"}
-    }
+# Time setup
+dt = 1  # seconds
+N = 5000
+r = np.zeros((N, 2))
+v = np.zeros((N, 2))
+
+r[0] = r0
+v[0] = v0
+
+for i in range(N - 1):
+    d = np.linalg.norm(r[i])
+    a = -G * M * r[i] / d**3
+    v[i + 1] = v[i] + a * dt
+    r[i + 1] = r[i] + v[i + 1] * dt
+
+x_vals = r[:, 0] / 1000  # Convert to km
+y_vals = r[:, 1] / 1000
+
+js.Plotly.newPlot("trajectoryPlot", [
+  {
+    "x": x_vals.tolist(),
+    "y": y_vals.tolist(),
+    "type": "scatter",
+    "mode": "lines",
+    "name": "Trajectory",
+    "line": {"color": "#3182ce"}
+  }
 ], {
-    "title": "Cosmic Velocities of Celestial Bodies",
-    "xaxis": {"title": "Celestial Body"},
-    "yaxis": {"title": "Velocity (m/s)"},
-    "barmode": "group"
+  "title": "Payload Trajectory Released Near Earth",
+  "xaxis": {"title": "X (km)"},
+  "yaxis": {"title": "Y (km)"},
+  "showlegend": true
 })
   </script>
 
-  <!-- Pyodide bootloader -->
   <script>
     async function main() {
       const pyodide = await loadPyodide();
-      await pyodide.loadPackage("micropip");
       await pyodide.loadPackage("numpy");
       await pyodide.runPythonAsync(document.getElementById("py-script").textContent);
     }
     main();
-  </script>
-
-  <!-- MathJax for equations -->
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
   </script>
 </body>
 </html>
