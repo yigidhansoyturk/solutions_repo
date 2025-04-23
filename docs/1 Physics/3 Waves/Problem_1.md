@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Water Surface Interference Patterns</title>
+  <meta charset="UTF-8" />
+  <title>🌊 Interference Patterns on a Water Surface</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 40px auto;
-      max-width: 1000px;
-      background-color: #fefefe;
+      max-width: 900px;
+      background-color: #f9f9f9;
       color: #333;
       line-height: 1.6;
     }
-    h1, h2 {
+    h1, h2, h3 {
       color: #2c3e50;
     }
     #plot {
@@ -22,125 +22,88 @@
     label {
       font-weight: bold;
     }
-    input {
+    input, select {
       margin-bottom: 10px;
     }
-    button {
-      margin-top: 10px;
-      padding: 6px 12px;
-      font-weight: bold;
-      background: #3498db;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #2980b9;
+    pre {
+      background-color: #eee;
+      padding: 10px;
+      overflow-x: auto;
     }
   </style>
 </head>
 <body>
 
-  <h1>🌊 Animated Water Surface Interference Patterns</h1>
+  <h1>🌊 Interference Patterns on a Water Surface</h1>
 
-  <h2>⚙️ Controls</h2>
-  <label for="numSources">Number of Sources (Polygon Vertices):</label>
-  <input type="range" id="numSources" min="2" max="8" value="4" oninput="updateParams()">
-  <span id="numSourcesValue">4</span>
+  <h2>📖 What Is This Simulation About?</h2>
 
-  <br>
+  <p>
+    When multiple circular water waves from different sources overlap, they create interference patterns.
+    These patterns arise due to the <strong>principle of superposition</strong>: the total wave at any point is
+    the sum of all the individual waves reaching it. Depending on how these waves align in space and time, they can
+    either reinforce each other (constructive interference) or cancel each other out (destructive interference).
+  </p>
 
-  <label for="amplitude">Amplitude (A):</label>
-  <input type="range" id="amplitude" min="0.5" max="5" step="0.1" value="1" oninput="updateParams()">
-  <span id="amplitudeValue">1</span>
+  <p>
+    In this simulation, <strong>N point wave sources</strong> are placed symmetrically around a circle (the vertices
+    of a regular polygon). Each source emits a wave described by:
+  </p>
 
-  <br>
+  <pre><code>η(x, y, t) = (A / √r) * cos(k * r - ω * t + φ)</code></pre>
 
-  <button onclick="downloadImage()">📸 Download Image</button>
-  <button onclick="downloadPDF()">📝 Export to PDF</button>
+  <ul>
+    <li><strong>A</strong>: Wave amplitude (controllable)</li>
+    <li><strong>r</strong>: Distance from the source to the point (x, y)</li>
+    <li><strong>k</strong>: Wave number, related to wavelength</li>
+    <li><strong>ω</strong>: Angular frequency, determines wave speed</li>
+    <li><strong>φ</strong>: Initial phase (set to zero here)</li>
+  </ul>
+
+  <p>
+    The result is the sum of all these waves at every point on a 2D grid. We visualize this as a dynamic
+    <strong>contour plot</strong>, which shows high and low points of the water surface over time. Bright areas
+    show constructive interference; dark areas show destructive cancellation.
+  </p>
+
+  <h3>🔍 Why Is This Interesting?</h3>
+  <ul>
+    <li>Models real-world physics like ripples in a pond, sound wave interactions, and antenna radiation.</li>
+    <li>Reveals beautiful and sometimes surprising symmetric patterns depending on the number of sources.</li>
+    <li>Lets you experiment interactively to build intuition about wave phenomena.</li>
+  </ul>
+
+  <h2>🛠️ Simulation Settings</h2>
+  <label for="numSources">Number of Wave Sources:</label>
+  <input type="range" id="numSources" min="2" max="12" step="1" value="6" oninput="updatePlot()" />
+  <span id="sourceValue">6</span><br>
+
+  <label for="amplitude">Wave Amplitude:</label>
+  <input type="range" id="amplitude" min="0.5" max="2" step="0.1" value="1" oninput="updatePlot()" />
+  <span id="amplitudeValue">1.0</span><br>
 
   <div id="plot"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
   <script>
-    const gridSize = 100;
-    const spacing = 10;
-    const k = 1.0;
-    const omega = 2.0;
-    const phi = 0;
-    let t = 0;
-    let interval;
-
-    const xRange = Array.from({ length: gridSize }, (_, i) => (i - gridSize / 2) * spacing);
-    const yRange = Array.from({ length: gridSize }, (_, j) => (j - gridSize / 2) * spacing);
-
-    function wave(x, y, sx, sy, amp) {
-      const r = Math.sqrt((x - sx) ** 2 + (y - sy) ** 2);
-      return amp * Math.cos(k * r - omega * t + phi) / Math.sqrt(r + 1e-3);
-    }
-
-    function generateSources(N, radius = 150) {
-      return Array.from({ length: N }, (_, i) => {
-        const angle = (2 * Math.PI * i) / N;
-        return [radius * Math.cos(angle), radius * Math.sin(angle)];
-      });
-    }
-
-    function plotPattern() {
+    function updatePlot() {
       const N = parseInt(document.getElementById("numSources").value);
-      const amp = parseFloat(document.getElementById("amplitude").value);
-      const sources = generateSources(N);
+      const A = parseFloat(document.getElementById("amplitude").value);
+      document.getElementById("sourceValue").textContent = N;
+      document.getElementById("amplitudeValue").textContent = A.toFixed(1);
 
-      const z = yRange.map(y =>
-        xRange.map(x =>
-          sources.reduce((sum, [sx, sy]) => sum + wave(x, y, sx, sy, amp), 0)
-        )
-      );
+      const size = 100;
+      const resolution = 100;
+      const λ = 10;
+      const k = 2 * Math.PI / λ;
+      const f = 1;
+      const ω = 2 * Math.PI * f;
+      const t = 0;
 
-      Plotly.react('plot', [{
-        z: z,
-        x: xRange,
-        y: yRange,
-        type: 'contour',
-        colorscale: 'RdBu',
-        contours: { coloring: 'heatmap' }
-      }], {
-        title: `Interference Pattern (N = ${N}, A = ${amp.toFixed(1)}, t = ${t.toFixed(2)})`,
-        xaxis: { title: 'x (cm)' },
-        yaxis: { title: 'y (cm)', scaleanchor: 'x' }
-      });
-    }
+      const x = Array.from({length: resolution}, (_, i) => -size/2 + i * size / resolution);
+      const y = Array.from({length: resolution}, (_, j) => -size/2 + j * size / resolution);
+      const z = [];
 
-    function updateParams() {
-      document.getElementById("numSourcesValue").textContent = document.getElementById("numSources").value;
-      document.getElementById("amplitudeValue").textContent = document.getElementById("amplitude").value;
-    }
-
-    function animate() {
-      interval = setInterval(() => {
-        t += 0.2;
-        plotPattern();
-      }, 100);
-    }
-
-    function downloadImage() {
-      Plotly.downloadImage('plot', {format: 'png', width: 800, height: 600, filename: 'interference_pattern'});
-    }
-
-    async function downloadPDF() {
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF();
-      const imgData = await Plotly.toImage('plot', {format: 'png', width: 800, height: 600});
-      pdf.text("Water Surface Interference Pattern", 10, 10);
-      pdf.addImage(imgData, 'PNG', 10, 20, 180, 135);
-      pdf.save('interference_pattern.pdf');
-    }
-
-    updateParams();
-    animate();
-  </script>
-
-</body>
-</html>
+      const R = 20; // radius of the polygon
+      const sources = [];
+      for (let i = 0; i < N; i++) {
+        const angle = 2 * Math.PI *
