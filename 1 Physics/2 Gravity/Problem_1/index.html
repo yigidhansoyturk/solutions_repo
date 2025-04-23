@@ -173,6 +173,9 @@
     code {
       font-family: 'Courier New', monospace;
     }
+    .plot {
+      margin-top: 2rem;
+    }
     footer {
       text-align: center;
       margin-top: 3rem;
@@ -192,25 +195,28 @@
 <p>
       For a body in circular orbit, the gravitational force provides the necessary centripetal force:
     </p>
-<pre><code>F = G * M * m / r² = m * v² / r</code></pre>
-<p>Substituting the orbital velocity <code>v = 2πr / T</code> into the equation and solving for <code>T</code> gives:</p>
-<pre><code>T² = (4π² / GM) * r³</code></pre>
+<pre><code>F = G \cdot \frac{Mm}{r^2} = \frac{mv^2}{r}</code></pre>
+<p>Substituting the orbital velocity \( v = \frac{2\pi r}{T} \) into the equation and solving for \( T \) gives:</p>
+<pre><code>T^2 = \frac{4\pi^2}{GM} \cdot r^3</code></pre>
 <p>This derivation highlights how orbital period depends on the radius and the mass of the central body.</p>
 <h2>Python Simulation</h2>
 <pre><code>import numpy as np
-import matplotlib.pyplot as plt
+import plotly.graph_objs as go
+from plotly.offline import plot
 
 G = 6.67430e-11  # gravitational constant
 M = 5.972e24     # mass of Earth in kg
-radii = np.linspace(6.4e6, 4.2e7, 100)  # from ~Earth surface to geosynchronous orbit
+radii = np.linspace(6.4e6, 4.2e7, 100)
 periods = 2 * np.pi * np.sqrt(radii**3 / (G * M))
 
-plt.plot(radii / 1e6, periods / 3600)
-plt.title("Orbital Period vs Orbital Radius")
-plt.xlabel("Orbital Radius (10⁶ m)")
-plt.ylabel("Orbital Period (hours)")
-plt.grid(True)
-plt.show()</code></pre>
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=radii / 1e6, y=periods / 3600, mode='lines', name='Period'))
+fig.update_layout(title='Orbital Period vs Orbital Radius',
+                  xaxis_title='Orbital Radius (10⁶ m)',
+                  yaxis_title='Orbital Period (hours)',
+                  template='plotly_white')
+plot(fig, filename='orbital_period_radius.html')</code></pre>
+<div class="plot" id="graph"></div>
 <h2>Applications</h2>
 <ul>
 <li>Used in calculating distances to planets and satellites</li>
@@ -223,13 +229,15 @@ plt.show()</code></pre>
     </p>
 <h2>Discussion</h2>
 <ul>
-<li><strong>Limitations:</strong> Assumes circular orbits and neglects perturbations, atmosphere drag, or relativistic effects</li>
+<li><strong>Limitations:</strong> Assumes circular orbits and neglects perturbations, atmospheric drag, or relativistic effects</li>
 <li><strong>Extensions:</strong> Elliptical orbit dynamics, non-Keplerian forces (e.g., solar radiation pressure)</li>
 </ul>
 <footer>
       © 2025 Physics Simulations | Orbital Period and Radius Exploration
     </footer>
 </div>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script async="" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>
 </html>
 </div>
