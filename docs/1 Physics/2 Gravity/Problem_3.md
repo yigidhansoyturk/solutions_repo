@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Physics Simulations</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/pyodide@0.23.4/pyodide.js"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -29,122 +29,84 @@
       text-align: center;
       margin-bottom: 1rem;
     }
-    h2 {
-      font-size: 2rem;
-      margin-top: 2rem;
-      color: #2b6cb0;
-      border-bottom: 2px solid #cbd5e0;
-      padding-bottom: 0.3rem;
-    }
-    h3 {
-      font-size: 1.5rem;
-      margin-top: 1.5rem;
-      color: #2c5282;
-    }
-    p, ul {
-      font-size: 1.125rem;
-      line-height: 1.75;
-    }
-    ul {
-      margin-left: 1.5rem;
-    }
     .plot {
-      margin: 2rem 0;
-    }
-    footer {
-      text-align: center;
-      margin-top: 3rem;
-      font-size: 0.9rem;
-      color: #718096;
+      margin-top: 2rem;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Escape Velocities and Cosmic Velocities</h1>
-
-    <h2>Motivation</h2>
-    <p>
-      The concept of escape velocity is crucial for understanding the conditions required to leave a celestial body's gravitational influence. Extending this concept, the first, second, and third cosmic velocities define the thresholds for orbiting, escaping, and leaving a star system. These principles underpin modern space exploration, from launching satellites to interplanetary missions.
-    </p>
-
-    <h2>Theoretical Foundation</h2>
-    <h3>Cosmic Velocities Explained</h3>
-    <p><strong>First Cosmic Velocity (Orbital Velocity):</strong></p>
-    <p>\[ v_1 = \sqrt{\frac{GM}{r}} \]</p>
-    <p><strong>Second Cosmic Velocity (Escape Velocity):</strong></p>
-    <p>\[ v_2 = \sqrt{\frac{2GM}{r}} \]</p>
-    <p><strong>Third Cosmic Velocity (Interstellar Escape):</strong></p>
-    <p>This is the velocity required to leave the solar system and is influenced by the Sun's gravity.</p>
-
-    <h2>Python Simulation</h2>
-    <p>
-      We compute the velocities using Python and visualize them with a dynamic bar chart below.
-    </p>
+    <h1>Payload Trajectory Simulation</h1>
     <div id="cosmicVelocitiesPlot" class="plot"></div>
-
-    <h2>Applications</h2>
-    <ul>
-      <li>Designing satellite orbits and interplanetary missions</li>
-      <li>Determining launch velocities for space travel</li>
-      <li>Understanding gravitational escape in different celestial environments</li>
-    </ul>
-
-    <h2>Discussion</h2>
-    <ul>
-      <li><strong>Limitations:</strong> Assumes spherical symmetry and vacuum; neglects atmospheric drag and relativistic effects</li>
-      <li><strong>Extensions:</strong> Include effects of rotation, atmosphere, and gravity assists</li>
-    </ul>
-
-    <footer>
-      &copy; 2025 Physics Simulations | Escape Velocities and Cosmic Dynamics
-    </footer>
   </div>
 
   <script type="text/python">
 import js
 import math
+import numpy as np
+
+# Constants
 G = 6.67430e-11
-bodies = [
-  {"name": "Earth", "M": 5.972e24, "r": 6.371e6},
-  {"name": "Mars", "M": 6.417e23, "r": 3.3895e6},
-  {"name": "Jupiter", "M": 1.898e27, "r": 6.9911e7},
-]
-names = [b["name"] for b in bodies]
-v1 = [math.sqrt(G * b["M"] / b["r"]) for b in bodies]
-v2 = [math.sqrt(2 * G * b["M"] / b["r"]) for b in bodies]
+M = 5.972e24  # Mass of Earth
+R = 6.371e6   # Radius of Earth
+v0 = 7800     # Initial velocity (m/s)
+angle = np.radians(45)
+
+# Initial conditions
+r0 = np.array([R, 0])
+v0_vec = v0 * np.array([np.cos(angle), np.sin(angle)])
+
+# Time setup
+dt = 1
+N = 5000
+r = np.zeros((N, 2))
+v = np.zeros((N, 2))
+r[0], v[0] = r0, v0_vec
+
+# Integrate trajectory
+for i in range(N - 1):
+    d = np.linalg.norm(r[i])
+    a = -G * M * r[i] / d**3
+    v[i + 1] = v[i] + a * dt
+    r[i + 1] = r[i] + v[i + 1] * dt
+
+# Convert to km
+x_km = r[:, 0] / 1000
+y_km = r[:, 1] / 1000
+
+# Plot
 js.Plotly.newPlot("cosmicVelocitiesPlot", [
   {
-    "x": names,
-    "y": v1,
-    "name": "1st Cosmic Velocity",
-    "type": "bar",
-    "marker": {"color": "#4299e1"}
+    "x": x_km.tolist(),
+    "y": y_km.tolist(),
+    "type": "scatter",
+    "mode": "lines",
+    "name": "Payload Trajectory",
+    "line": {"color": "#3182ce", "width": 2}
   },
   {
-    "x": names,
-    "y": v2,
-    "name": "2nd Cosmic Velocity",
-    "type": "bar",
-    "marker": {"color": "#ed8936"}
+    "x": [0],
+    "y": [0],
+    "type": "scatter",
+    "mode": "markers",
+    "name": "Earth Center",
+    "marker": {"size": 8, "color": "red"}
   }
 ], {
-  "title": "Cosmic Velocities of Celestial Bodies",
-  "xaxis": {"title": "Celestial Body"},
-  "yaxis": {"title": "Velocity (m/s)"},
-  "barmode": "group"
+  "title": "Payload Trajectory Around Earth",
+  "xaxis": {"title": "X (km)"},
+  "yaxis": {"title": "Y (km)"},
+  "showlegend": True
 })
   </script>
+
   <script>
     async function main() {
       const pyodide = await loadPyodide();
-      await pyodide.loadPackage(["matplotlib", "numpy"]);
-      await pyodide.runPythonAsync(document.querySelector('[type="text/python"]').textContent);
+      await pyodide.loadPackage("numpy");
+      await pyodide.runPythonAsync(document.querySelector('script[type="text/python"]').textContent);
     }
     main();
   </script>
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>
 </html>
