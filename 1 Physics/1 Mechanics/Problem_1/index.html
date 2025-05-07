@@ -123,7 +123,7 @@
 <head>
 <meta charset="utf-8"/>
 <title>Projectile Motion: Range vs Angle</title>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <style>
     body {
       font-family: Arial, sans-serif;
@@ -157,18 +157,12 @@
       margin-top: 0;
     }
 
-    /* New CSS to style formulas like in the image */
     .formula {
-      font-size: 1.6em;
+      font-size: 2em;
       font-family: 'Times New Roman', Times, serif;
       font-weight: bold;
       text-align: center;
       margin: 20px 0;
-      color: #e74c3c;
-    }
-
-    .formula code {
-      font-size: 1.3em;
       color: #e74c3c;
     }
   </style>
@@ -181,14 +175,14 @@
       Assuming flat terrain and no air resistance, the horizontal range is given by the equation:
     </p>
 <div class="formula">
-<code>Range: R = (v₀² * sin(2θ)) / g</code>
-</div>
+      \( R = \frac{{v_0^2 \cdot \sin(2\theta)}}{g} \)
+    </div>
 <p>This is derived from the motion's horizontal and vertical components:</p>
 <ul>
-<li><code>vx = v₀ * cos(θ)</code> (horizontal component)</li>
-<li><code>vy = v₀ * sin(θ)</code> (vertical component)</li>
-<li><code>Time of flight = 2 * vy / g</code></li>
-<li><code>Range = vx * time</code></li>
+<li>\( v_x = v_0 \cdot \cos(\theta) \) (horizontal component)</li>
+<li>\( v_y = v_0 \cdot \sin(\theta) \) (vertical component)</li>
+<li>\( \text{Time of flight} = \frac{2 \cdot v_y}{g} \)</li>
+<li>\( \text{Range} = v_x \cdot \text{time} \)</li>
 </ul>
 <p>At an ideal launch angle of 45°, the range reaches its maximum value. We will explore how the range varies with different angles and initial velocities.</p>
 </section>
