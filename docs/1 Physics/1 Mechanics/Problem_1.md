@@ -3,315 +3,184 @@
 <head>
   <meta charset="UTF-8" />
   <title>Projectile Motion: Range vs Angle</title>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <script type="text/javascript" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
       margin: 40px auto;
       max-width: 1000px;
       padding: 0 20px;
-      background-color: #f8f9fa;
+      background-color: #fefefe;
       color: #333;
       line-height: 1.6;
     }
     h1, h2, h3 {
       color: #2c3e50;
-      margin-top: 30px;
     }
-    h1 {
-      border-bottom: 2px solid #3498db;
-      padding-bottom: 10px;
+    input[type="range"], input[type="number"] {
+      width: 200px;
+      margin-right: 10px;
     }
-    .control-panel {
-      background-color: #e8f4fc;
-      padding: 20px;
-      border-radius: 8px;
-      margin: 20px 0;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .control-group {
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-    }
-    label {
+    #controls label {
       font-weight: bold;
-      min-width: 150px;
-      margin-right: 15px;
+      margin-right: 10px;
     }
-    input[type="range"] {
-      width: 300px;
-      margin-right: 15px;
+    #plot {
+      margin-top: 20px;
     }
-    input[type="number"] {
-      width: 100px;
-      padding: 5px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-    .value-display {
-      min-width: 50px;
-      display: inline-block;
-      text-align: right;
-    }
-    #plot-container {
-      margin: 30px 0;
-      border: 1px solid #ddd;
-      border-radius: 8px;
+    pre {
+      background: #f4f4f4;
       padding: 10px;
-      background-color: white;
-    }
-    .formula {
-      font-size: 1.4em;
-      font-family: 'Times New Roman', Times, serif;
-      text-align: center;
-      margin: 25px 0;
-      padding: 15px;
-      background-color: #f0f7ff;
-      border-left: 4px solid #3498db;
-      color: #2c3e50;
-    }
-    .small-formula {
-      font-size: 1.1em;
-      font-family: 'Times New Roman', Times, serif;
-      color: #2980b9;
-    }
-    .info-box {
-      background-color: #e8f8f5;
-      padding: 15px;
-      border-radius: 8px;
-      margin: 20px 0;
-      border-left: 4px solid #1abc9c;
-    }
-    .limitations {
-      background-color: #fdedec;
-      padding: 15px;
-      border-radius: 8px;
-      margin: 20px 0;
-      border-left: 4px solid #e74c3c;
+      overflow-x: auto;
     }
     ul {
-      padding-left: 20px;
+      margin-top: 0;
     }
-    li {
-      margin-bottom: 8px;
-    }
-    .key-point {
+
+    /* Style for formulas to keep the size consistent */
+    .formula {
+      font-size: 1.5em;
+      font-family: 'Times New Roman', Times, serif;
       font-weight: bold;
-      color: #16a085;
-    }
-    .comparison-table {
-      width: 100%;
-      border-collapse: collapse;
+      text-align: center;
       margin: 20px 0;
+      color: #e74c3c;
     }
-    .comparison-table th, .comparison-table td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-    .comparison-table th {
-      background-color: #f2f2f2;
-    }
-    .comparison-table tr:nth-child(even) {
-      background-color: #f9f9f9;
+
+    /* Small formulas for inline usage */
+    .small-formula {
+      font-size: 1.2em;
+      font-family: 'Times New Roman', Times, serif;
+      font-weight: normal;
+      text-align: center;
+      margin: 10px 0;
+      color: #333;
     }
   </style>
 </head>
 <body>
 
-  <h1>🚀 Projectile Motion: Range vs Launch Angle</h1>
+  <h1>🚀 Investigating Range vs Angle in Projectile Motion</h1>
 
   <section>
-    <p>This interactive simulation explores how the range of a projectile varies with its launch angle under different conditions. Adjust the parameters below to see how they affect the projectile's trajectory.</p>
+    <p>
+      A projectile launched at an angle <strong>θ</strong> and initial speed <strong>v₀</strong> follows a parabolic path under gravity.
+      Assuming flat terrain and no air resistance, the horizontal range is given by the equation:
+    </p>
     
+    <!-- Larger formula for the main equation -->
     <div class="formula">
-      \( R = \frac{v_0^2 \cdot \sin(2\theta)}{g} \) (for h₀ = 0)
+      \( R = \frac{{v_0^2 \cdot \sin(2\theta)}}{g} \)
     </div>
-    
-    <p>For non-zero launch heights, the range equation becomes:</p>
-    
-    <div class="small-formula">
-      \( R = \frac{v_0 \cos\theta}{g} \left( v_0 \sin\theta + \sqrt{v_0^2 \sin^2\theta + 2gh_0} \right) \)
-    </div>
+
+    <p>This is derived from the motion's horizontal and vertical components:</p>
+    <ul>
+      <li class="small-formula">\( v_x = v_0 \cdot \cos(\theta) \) (horizontal component)</li>
+      <li class="small-formula">\( v_y = v_0 \cdot \sin(\theta) \) (vertical component)</li>
+      <li class="small-formula">\( \text{Time of flight} = \frac{2 \cdot v_y}{g} \)</li>
+      <li class="small-formula">\( \text{Range} = v_x \cdot \text{time} \)</li>
+    </ul>
+    <p>At an ideal launch angle of 45°, the range reaches its maximum value. We will explore how the range varies with different angles and initial velocities.</p>
   </section>
 
-  <section class="control-panel">
+  <section>
     <h2>🧪 Simulation Controls</h2>
-    
-    <div class="control-group">
-      <label for="v0">Initial Velocity (v₀):</label>
+    <div id="controls">
+      <label>Initial Velocity (v₀):</label>
       <input type="range" id="v0" min="5" max="100" value="30" step="1" oninput="updateAll()" />
-      <span id="v0Val" class="value-display">30</span> m/s
-    </div>
-    
-    <div class="control-group">
-      <label for="gravity">Gravity (g):</label>
-      <input type="number" id="gravity" min="1" max="25" value="9.81" step="0.1" oninput="updateAll()" /> m/s²
-    </div>
-    
-    <div class="control-group">
-      <label for="height">Launch Height (h₀):</label>
-      <input type="number" id="height" min="0" max="100" value="0" step="1" oninput="updateAll()" /> meters
-    </div>
-  </section>
+      <span id="v0Val">30</span> m/s<br><br>
 
-  <div id="plot-container">
+      <label>Gravity (g):</label>
+      <input type="number" id="gravity" min="1" max="25" value="9.81" step="0.1" oninput="updateAll()" /> m/s²<br><br>
+
+      <label>Launch Height (h₀):</label>
+      <input type="number" id="height" min="0" max="100" value="0" step="1" oninput="updateAll()" /> meters<br>
+    </div>
     <div id="plot"></div>
-  </div>
-
-  <section class="info-box">
-    <h2>📊 Key Observations</h2>
-    <ul>
-      <li><span class="key-point">Maximum range occurs at 45°</span> when launched from ground level (h₀ = 0)</li>
-      <li>For non-zero launch heights, the optimal angle <span class="key-point">decreases below 45°</span></li>
-      <li>Range is <span class="key-point">proportional to v₀²</span> - doubling velocity quadruples the range</li>
-      <li>Range is <span class="key-point">inversely proportional to g</span> - lower gravity increases range</li>
-    </ul>
   </section>
 
   <section>
-    <h2>🔍 Detailed Analysis</h2>
-    <p>The motion can be broken into horizontal and vertical components:</p>
-    
-    <table class="comparison-table">
-      <tr>
-        <th>Component</th>
-        <th>Equation</th>
-        <th>Description</th>
-      </tr>
-      <tr>
-        <td>Horizontal</td>
-        <td class="small-formula">\( x(t) = v_0 \cos\theta \cdot t \)</td>
-        <td>Constant velocity (no acceleration)</td>
-      </tr>
-      <tr>
-        <td>Vertical</td>
-        <td class="small-formula">\( y(t) = h_0 + v_0 \sin\theta \cdot t - \frac{1}{2}gt^2 \)</td>
-        <td>Accelerated motion under gravity</td>
-      </tr>
-    </table>
-    
-    <p>The time of flight is determined by solving for when the projectile returns to ground level (y = 0).</p>
-  </section>
-
-  <section class="limitations">
-    <h2>⚠️ Model Limitations</h2>
-    <p>This simulation makes several simplifying assumptions:</p>
-    <ul>
-      <li><strong>No air resistance:</strong> In reality, drag forces significantly affect high-velocity projectiles</li>
-      <li><strong>Constant gravity:</strong> For very high trajectories, g decreases with altitude</li>
-      <li><strong>Flat Earth:</strong> Neglects Earth's curvature for long-range projectiles</li>
-      <li><strong>No spin effects:</strong> Real projectiles often rotate, creating Magnus effects</li>
-      <li><strong>Point mass:</strong> Ignores the projectile's size and shape</li>
-    </ul>
+    <h2>📊 Graph Interpretation</h2>
+    <p>
+      The plot shows how the horizontal range varies with angle for a given set of conditions.
+      When height is zero, the range is maximized at 45°. If you increase height, this symmetry is broken.
+      Higher velocities stretch the curve upwards.
+    </p>
   </section>
 
   <section>
-    <h2>🌍 Real-World Applications</h2>
-    <p>Understanding projectile motion is crucial for:</p>
-    <ul>
-      <li><strong>Sports:</strong> Optimizing throws, kicks, and shots in basketball, football, golf, etc.</li>
-      <li><strong>Military:</strong> Artillery and missile trajectory calculations</li>
-      <li><strong>Engineering:</strong> Designing water fountains, fireworks, and amusement park rides</li>
-      <li><strong>Spaceflight:</strong> Calculating suborbital trajectories and re-entry paths</li>
-    </ul>
+    <h2>🌍 Real-World Considerations</h2>
+    <p>
+      The model assumes:
+      <ul>
+        <li>Flat launch/landing height</li>
+        <li>No air resistance</li>
+        <li>Still air and no spin</li>
+      </ul>
+    </p>
+    <p>
+      In real scenarios, these factors matter:
+      <ul>
+        <li><strong>Air drag:</strong> slows the projectile and reduces range</li>
+        <li><strong>Launch height:</strong> longer flight time, increases range</li>
+        <li><strong>Wind:</strong> adds or subtracts from velocity</li>
+        <li><strong>Magnus effect:</strong> from spin, curves the path</li>
+      </ul>
+      These effects require more complex models, typically solved numerically or via simulations.
+    </p>
   </section>
 
   <script>
-    // Function to compute range with optional height
+    // Function to compute range based on initial velocity, gravity, launch angle, and height
     function computeRange(v0, g, angleDeg, h0) {
-      const theta = angleDeg * Math.PI / 180;
-      const v0x = v0 * Math.cos(theta);
-      const v0y = v0 * Math.sin(theta);
-      
-      // Solve quadratic equation for time of flight
-      const discriminant = v0y * v0y + 2 * g * h0;
-      if (discriminant < 0) return 0; // No real solution (projectile never reaches ground)
-      
-      const t_flight = (v0y + Math.sqrt(discriminant)) / g;
-      return v0x * t_flight;
+      const theta = angleDeg * Math.PI / 180; // Convert angle to radians
+      const v0x = v0 * Math.cos(theta);  // Horizontal velocity
+      const v0y = v0 * Math.sin(theta);  // Vertical velocity
+      // Time of flight with height: solve the quadratic equation for time
+      const t_flight = (v0y + Math.sqrt(v0y * v0y + 2 * g * h0)) / g;
+      return v0x * t_flight;  // Range = horizontal velocity * time of flight
     }
 
-    // Function to update the plot
+    // Function to update the plot based on user input
     function updateAll() {
-      const v0 = parseFloat(document.getElementById('v0').value);
-      const g = parseFloat(document.getElementById('gravity').value);
-      const h0 = parseFloat(document.getElementById('height').value);
-      document.getElementById('v0Val').textContent = v0;
+      const v0 = parseFloat(document.getElementById('v0').value);  // Get velocity from input
+      const g = parseFloat(document.getElementById('gravity').value);  // Get gravity from input
+      const h0 = parseFloat(document.getElementById('height').value);  // Get height from input
+      document.getElementById('v0Val').textContent = v0;  // Update displayed value of v₀
 
-      // Calculate data points
-      const angles = [];
-      const ranges = [];
-      const maxAngle = 90;
-      const step = 0.5;
-      
-      for (let theta = 0; theta <= maxAngle; theta += step) {
+      const angles = [];  // Array for angles
+      const ranges = [];  // Array for corresponding ranges
+
+      // Calculate the range for angles from 0° to 90° (in increments of 0.5°)
+      for (let theta = 0; theta <= 90; theta += 0.5) {
         angles.push(theta);
         ranges.push(computeRange(v0, g, theta, h0));
       }
 
-      // Find maximum range and optimal angle
-      let maxRange = 0;
-      let optimalAngle = 0;
-      ranges.forEach((range, index) => {
-        if (range > maxRange) {
-          maxRange = range;
-          optimalAngle = angles[index];
-        }
-      });
-
-      // Create plot data
+      // Plot the range vs angle
       const trace = {
         x: angles,
         y: ranges,
         type: 'scatter',
         mode: 'lines',
-        line: { color: '#3498db', width: 3 },
-        name: `Range (max: ${maxRange.toFixed(1)}m at ${optimalAngle.toFixed(1)}°)`
-      };
-
-      // Highlight optimal angle
-      const optimalTrace = {
-        x: [optimalAngle],
-        y: [maxRange],
-        mode: 'markers',
-        marker: {
-          color: '#e74c3c',
-          size: 10
-        },
-        name: 'Optimal Angle'
+        line: { color: 'royalblue', width: 3 },
+        name: `v₀ = ${v0} m/s`
       };
 
       // Plot layout
       const layout = {
-        title: `Projectile Range vs Launch Angle (v₀ = ${v0}m/s, g = ${g}m/s², h₀ = ${h0}m)`,
-        xaxis: { 
-          title: 'Launch Angle (degrees)',
-          range: [0, maxAngle]
-        },
-        yaxis: { 
-          title: 'Range (meters)',
-          range: [0, maxRange * 1.1]
-        },
-        showlegend: true,
-        legend: { x: 0.7, y: 0.1 },
-        annotations: [{
-          x: optimalAngle,
-          y: maxRange,
-          text: `Max: ${maxRange.toFixed(1)}m`,
-          showarrow: true,
-          arrowhead: 5,
-          ax: 0,
-          ay: -40
-        }]
+        title: 'Range vs Angle of Projection',
+        xaxis: { title: 'Angle (degrees)' },
+        yaxis: { title: 'Range (meters)' }
       };
 
-      Plotly.newPlot('plot', [trace, optimalTrace], layout);
+      Plotly.newPlot('plot', [trace], layout);  // Plot using Plotly
     }
 
-    // Initialize plot
+    // Initialize the plot with default values
     updateAll();
   </script>
 
