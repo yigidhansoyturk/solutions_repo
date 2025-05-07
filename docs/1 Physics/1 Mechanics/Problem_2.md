@@ -85,9 +85,6 @@
   <li>Chaotic dynamics</li>
 </ul>
 
-<h2>📜 Simulation Code Removed</h2>
-<p>The Python simulation code has been removed from this page. You can still run the simulation in a Python environment by using the equations and parameters provided above.</p>
-
 <script>
 function simulate() {
     const gamma = parseFloat(document.getElementById('gamma').value);
