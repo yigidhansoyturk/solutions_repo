@@ -55,9 +55,7 @@
     <p>
       The forced damped pendulum is governed by the nonlinear second-order differential equation:
     </p>
-    <p><strong>
       \( \frac{d^2\theta}{dt^2} + b \frac{d\theta}{dt} + \frac{g}{L} \sin(\theta) = A \cos(\omega t) \)
-    </strong></p>
     <p>
       Here:
       <ul>
