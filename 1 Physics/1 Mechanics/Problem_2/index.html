@@ -124,119 +124,107 @@
 <meta charset="utf-8"/>
 <title>Forced Damped Pendulum Simulation</title>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px auto;
-            max-width: 960px;
-            background-color: #fefefe;
-            color: #2d3436;
-            line-height: 1.6;
-        }
-        h1, h2, h3 {
-            color: #2c3e50;
-        }
-        pre {
-            background-color: #f4f4f4;
-            padding: 10px;
-            overflow-x: auto;
-        }
-        code {
-            font-family: Consolas, monospace;
-        }
-        .control-group {
-            margin-bottom: 10px;
-        }
-        label {
-            font-weight: bold;
-        }
-        #plot {
-            margin-top: 20px;
-        }
-    </style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px auto;
+      max-width: 900px;
+      padding: 0 20px;
+      background-color: #fefefe;
+      color: #333;
+      line-height: 1.6;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    input[type="range"], input[type="number"] {
+      width: 200px;
+      margin: 5px 0;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+    #plot {
+      margin-top: 30px;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      overflow-x: auto;
+    }
+  </style>
 </head>
 <body>
-<h1>🌀 Investigating the Dynamics of a Forced Damped Pendulum</h1>
+<h1>🌀 Forced Damped Pendulum Simulation</h1>
+<section>
 <h2>📘 Theoretical Foundation</h2>
-<p>The equation governing a forced damped pendulum is:</p>
-<p id="equation"></p>
-<script>
-  MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-  document.getElementById("equation").innerHTML = '\\( \\frac{d^2\\theta}{dt^2} + \\gamma \\frac{d\\theta}{dt} + \\omega_0^2 \\sin(\\theta) = A \\cos(\\omega t) \\)';
-</script>
+<p>The motion is governed by the nonlinear second-order differential equation:</p>
+<pre>
+d²θ/dt² + b·dθ/dt + (g/L)·sin(θ) = A·cos(ωt)
+    </pre>
 <p>Where:</p>
 <ul>
-<li><strong>\\( \\gamma \\)</strong>: damping coefficient</li>
-<li><strong>\\( \\omega_0 \\)</strong>: natural frequency</li>
-<li><strong>\\( A \\)</strong>: driving amplitude</li>
-<li><strong>\\( \\omega \\)</strong>: driving frequency</li>
+<li><strong>θ(t)</strong> is the angular displacement</li>
+<li><strong>b</strong> is the damping coefficient</li>
+<li><strong>g</strong> is gravitational acceleration</li>
+<li><strong>L</strong> is pendulum length</li>
+<li><strong>A</strong> is the forcing amplitude</li>
+<li><strong>ω</strong> is the forcing frequency</li>
 </ul>
-<p>This second-order nonlinear differential equation describes the pendulum's motion under the influence of damping and external driving forces.</p>
-<h2>🧪 Simulation Controls</h2>
-<div class="control-group">
-<label for="gamma">Damping Coefficient (\\( \\gamma \\)):</label>
-<input id="gamma" max="1" min="0" oninput="simulate()" step="0.01" type="range" value="0.2"/>
-<span id="gammaVal">0.2</span>
-</div>
-<div class="control-group">
-<label for="A">Driving Amplitude (\\( A \\)):</label>
-<input id="A" max="2" min="0" oninput="simulate()" step="0.1" type="range" value="1"/>
-<span id="AVal">1</span>
-</div>
-<div class="control-group">
-<label for="omega">Driving Frequency (\\( \\omega \\)):</label>
-<input id="omega" max="5" min="0.1" oninput="simulate()" step="0.1" type="range" value="1.5"/>
-<span id="omegaVal">1.5</span>
-</div>
-<div id="plot"></div>
-<h2>📈 Dynamics &amp; Visualizations</h2>
-<p>The graph above illustrates the angular displacement of a forced damped pendulum over time. Depending on your parameter choices, you may observe:</p>
-<ul>
-<li>Simple harmonic motion</li>
-<li>Resonant amplification</li>
-<li>Chaotic dynamics</li>
-</ul>
+</section>
+<section>
+<h2>🎛️ Simulation Controls</h2>
+<label>Damping Coefficient (b): <input id="b" step="0.1" type="number" value="0.5"/></label>
+<label>Amplitude (A): <input id="A" step="0.1" type="number" value="1.2"/></label>
+<label>Frequency (ω): <input id="omega" step="0.01" type="number" value="2/3"/></label>
+<label>Pendulum Length (L): <input id="L" step="0.1" type="number" value="9.8"/></label>
+<button onclick="simulate()">Run Simulation</button>
+</section>
+<section id="plot"></section>
 <script>
-function simulate() {
-    const gamma = parseFloat(document.getElementById('gamma').value);
-    const A = parseFloat(document.getElementById('A').value);
-    const omega = parseFloat(document.getElementById('omega').value);
+    function simulate() {
+      const b = parseFloat(document.getElementById('b').value);
+      const A = parseFloat(document.getElementById('A').value);
+      const omega = parseFloat(document.getElementById('omega').value);
+      const L = parseFloat(document.getElementById('L').value);
+      const g = 9.8;
 
-    document.getElementById('gammaVal').textContent = gamma;
-    document.getElementById('AVal').textContent = A;
-    document.getElementById('omegaVal').textContent = omega;
+      let theta = 0.2;  // initial angle
+      let omega_theta = 0; // initial angular velocity
+      const dt = 0.04;
+      const time = [], angles = [];
 
-    let t = [], theta = [], w = 0, angle = 0, dt = 0.05;
-    let maxT = 50;
+      for (let t = 0; t < 100; t += dt) {
+        const domega_dt = -b * omega_theta - (g / L) * Math.sin(theta) + A * Math.cos(omega * t);
+        omega_theta += domega_dt * dt;
+        theta += omega_theta * dt;
 
-    for (let time = 0; time <= maxT; time += dt) {
-        let dw = -gamma * w - Math.sin(angle) + A * Math.cos(omega * time);
-        w += dw * dt;
-        angle += w * dt;
-        t.push(time);
-        theta.push(angle);
-    }
+        time.push(t);
+        angles.push(theta);
+      }
 
-    const trace = {
-        x: t,
-        y: theta,
+      const trace = {
+        x: time,
+        y: angles,
+        type: 'scatter',
         mode: 'lines',
-        line: { color: 'crimson' },
-        name: 'Theta(t)'
-    };
+        line: { color: 'darkred' },
+        name: 'θ(t)'
+      };
 
-    const layout = {
+      const layout = {
         title: 'Forced Damped Pendulum Motion',
         xaxis: { title: 'Time (s)' },
-        yaxis: { title: 'Angular Displacement (rad)' }
-    };
+        yaxis: { title: 'Angle θ (rad)' }
+      };
 
-    Plotly.newPlot('plot', [trace], layout);
-}
+      Plotly.newPlot('plot', [trace], layout);
+    }
 
-simulate();
-</script>
+    simulate();
+  </script>
 </body>
 </html>
 </div>
