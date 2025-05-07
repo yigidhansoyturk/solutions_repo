@@ -125,10 +125,11 @@
 <title>Forced Damped Pendulum Simulator</title>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 40px auto;
+      margin: 0 auto;
       max-width: 1000px;
       padding: 0 20px;
       background-color: #fefefe;
@@ -142,9 +143,12 @@
       margin: 5px 10px;
     }
     .scenario-btn {
-      margin: 10px 5px;
+      margin: 15px 5px;
       padding: 5px 10px;
       cursor: pointer;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      font-size: 14px;
     }
     #plot {
       margin-top: 30px;
@@ -153,6 +157,12 @@
       background: #f4f4f4;
       padding: 3px 6px;
       border-radius: 4px;
+    }
+    h2 {
+      font-size: 1.5em; /* Adjusted size */
+    }
+    .scenario-btn {
+      font-size: 14px;
     }
   </style>
 </head>
@@ -164,7 +174,7 @@
       The forced damped pendulum is governed by the nonlinear second-order differential equation:
     </p>
 <p><strong>
-      \[ \frac{d^2\theta}{dt^2} + b \frac{d\theta}{dt} + \frac{g}{L} \sin(\theta) = A \cos(\omega t) \]
+      \( \frac{d^2\theta}{dt^2} + b \frac{d\theta}{dt} + \frac{g}{L} \sin(\theta) = A \cos(\omega t) \)
     </strong></p>
 <p>
       Here:
@@ -190,15 +200,15 @@
 <button onclick="runSimulation()">Run Simulation</button>
 </div>
 <h3>💡 Example Scenarios:</h3>
-<button class="scenario-btn" onclick="loadScenario('periodic')">Periyodik (b=0.2, A=1.2, ω=2.0)</button>
-<button class="scenario-btn" onclick="loadScenario('resonance')">Rezonans (b=0.05, A=0.9, ω≈√(g/L))</button>
-<button class="scenario-btn" onclick="loadScenario('chaotic')">Kaotik (b=0.1, A=1.5, θ₀=1.5)</button>
+<button class="scenario-btn" onclick="loadScenario('periodic')">Periodic (b=0.2, A=1.2, ω=2.0)</button>
+<button class="scenario-btn" onclick="loadScenario('resonance')">Resonance (b=0.05, A=0.9, ω≈√(g/L))</button>
+<button class="scenario-btn" onclick="loadScenario('chaotic')">Chaotic (b=0.1, A=1.5, θ₀=1.5)</button>
 </section>
 <div id="plot"></div>
 <section>
 <h2>📊 What You See on the Graph</h2>
 <p id="description">
-      The plot below shows the angular displacement <code>θ(t)</code> over time, based on the chosen parameters. 
+      The plot below shows the angular displacement \( \theta(t) \) over time, based on the chosen parameters. 
       By changing the damping, driving amplitude, and frequency, you can observe transitions between regular and chaotic motion.
     </p>
 </section>
