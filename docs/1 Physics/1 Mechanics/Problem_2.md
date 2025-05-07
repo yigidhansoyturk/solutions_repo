@@ -85,33 +85,8 @@
   <li>Chaotic dynamics</li>
 </ul>
 
-<h2>📜 Python Simulation Code</h2>
-<p>The following Python code snippet simulates and plots the pendulum's motion using the Runge-Kutta method:</p>
-<pre><code>import numpy as np
-import matplotlib.pyplot as plt
-from scipy.integrate import solve_ivp
-
-def pendulum(t, y, gamma, A, omega):
-    theta, omega_p = y
-    dtheta_dt = omega_p
-    domega_dt = -gamma * omega_p - np.sin(theta) + A * np.cos(omega * t)
-    return [dtheta_dt, domega_dt]
-
-# Parameters
-gamma = 0.2
-A = 1.0
-omega = 1.5
-y0 = [0.1, 0]
-t = np.linspace(0, 50, 1000)
-
-sol = solve_ivp(pendulum, [0, 50], y0, t_eval=t, args=(gamma, A, omega))
-
-plt.plot(sol.t, sol.y[0])
-plt.xlabel('Time')
-plt.ylabel('Theta (rad)')
-plt.title('Forced Damped Pendulum')
-plt.grid(True)
-plt.show()</code></pre>
+<h2>📜 Simulation Code Removed</h2>
+<p>The Python simulation code has been removed from this page. You can still run the simulation in a Python environment by using the equations and parameters provided above.</p>
 
 <script>
 function simulate() {
