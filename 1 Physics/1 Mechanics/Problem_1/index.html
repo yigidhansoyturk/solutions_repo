@@ -156,6 +156,20 @@
     ul {
       margin-top: 0;
     }
+
+    /* New CSS to style formulas like in the image */
+    .formula {
+      font-size: 1.5em;
+      font-family: 'Times New Roman', Times, serif;
+      font-weight: bold;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .formula code {
+      font-size: 1.2em;
+      color: #e74c3c;
+    }
   </style>
 </head>
 <body>
@@ -165,7 +179,9 @@
       A projectile launched at an angle <strong>θ</strong> and initial speed <strong>v₀</strong> follows a parabolic path under gravity.
       Assuming flat terrain and no air resistance, the horizontal range is given by the equation:
     </p>
-<pre><code>Range: R = (v₀² * sin(2θ)) / g</code></pre>
+<div class="formula">
+<code>Range: R = (v₀² * sin(2θ)) / g</code>
+</div>
 <p>This is derived from the motion's horizontal and vertical components:</p>
 <ul>
 <li><code>vx = v₀ * cos(θ)</code> (horizontal component)</li>
