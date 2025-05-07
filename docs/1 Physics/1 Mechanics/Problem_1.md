@@ -1,163 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Projectile Motion: Range vs Angle</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px auto;
-            max-width: 900px;
-            background-color: #fefefe;
-            color: #333;
-            line-height: 1.6;
-        }
-        h1, h2, h3 {
-            color: #2c3e50;
-        }
-        pre {
-            background-color: #f0f0f0;
-            padding: 10px;
-            overflow-x: auto;
-        }
-        code {
-            font-family: Consolas, monospace;
-            color: #2d3436;
-        }
-        #plot {
-            margin-top: 20px;
-        }
-        label {
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Projectile Motion: Range vs Angle</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px auto;
+      max-width: 1000px;
+      padding: 0 20px;
+      background-color: #fefefe;
+      color: #333;
+      line-height: 1.6;
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+    input[type="range"], input[type="number"] {
+      width: 200px;
+      margin-right: 10px;
+    }
+    #controls label {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+    #plot {
+      margin-top: 20px;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      overflow-x: auto;
+    }
+    ul {
+      margin-top: 0;
+    }
+  </style>
 </head>
 <body>
 
-    <h1>Investigating the Range as a Function of the Angle of Projection</h1>
+  <h1>🚀 Investigating Range vs Angle in Projectile Motion</h1>
 
-    <div>
-        <h2>📘 Theoretical Foundation</h2>
-        <p>
-            In ideal projectile motion, an object launched at angle <strong>θ</strong> with speed <strong>v₀</strong> follows a parabolic path.
-            The horizontal range R is derived from Newton’s laws as:
-        </p>
-        <pre><code>R = (v₀² * sin(2θ)) / g</code></pre>
-        <p>This equation emerges by solving the motion components:</p>
-        <ul>
-            <li><code>vx = v₀ * cos(θ)</code></li>
-            <li><code>vy = v₀ * sin(θ)</code></li>
-            <li>Time of flight: <code>T = 2 * v₀ * sin(θ) / g</code></li>
-            <li>Range: <code>R = vx * T</code></li>
-        </ul>
-        <p>
-            This results in a <strong>family of parabolas</strong> based on initial velocity and angle.
-            All trajectories share a common shape but scale differently with <code>v₀</code> and <code>θ</code>.
-        </p>
+  <section>
+    <h2>📘 Theoretical Foundation</h2>
+    <p>
+      A projectile launched at an angle <strong>θ</strong> and initial speed <strong>v₀</strong> follows a parabolic path under gravity.
+      Assuming flat terrain and no air resistance:
+    </p>
+    <pre><code>Range: R = (v₀² * sin(2θ)) / g</code></pre>
+    <p>This comes from decomposing motion into components:</p>
+    <ul>
+      <li><code>vx = v₀ * cos(θ)</code></li>
+      <li><code>vy = v₀ * sin(θ)</code></li>
+      <li><code>Time of flight = 2 * vy / g</code></li>
+      <li><code>Range = vx * time</code></li>
+    </ul>
+    <p>
+      The shape of the curve depends on angle, speed, and gravity. Maximum range occurs at 45°.
+    </p>
+  </section>
+
+  <section>
+    <h2>🧪 Simulation Controls</h2>
+    <div id="controls">
+      <label>Initial Velocity (v₀):</label>
+      <input type="range" id="v0" min="5" max="100" value="30" step="1" oninput="updateAll()" />
+      <span id="v0Val">30</span> m/s<br><br>
+
+      <label>Gravity (g):</label>
+      <input type="number" id="gravity" min="1" max="25" value="9.81" step="0.1" oninput="updateAll()" /> m/s²<br><br>
+
+      <label>Launch Height (h₀):</label>
+      <input type="number" id="height" min="0" max="100" value="0" step="1" oninput="updateAll()" /> meters<br>
     </div>
+    <div id="plot"></div>
+  </section>
 
-    <div>
-        <h2>🧪 Simulation: Range vs Angle</h2>
-        <label for="velocity">Adjust Initial Velocity (m/s):</label>
-        <input type="range" id="velocity" min="5" max="100" value="30" oninput="updatePlot()">
-        <span id="velocityValue">30</span> m/s
+  <section>
+    <h2>📊 Graph Interpretation</h2>
+    <p>
+      The plot shows how the horizontal range varies with angle for a given set of conditions.
+      When height is zero, the range is maximized at 45°. If you increase height, this symmetry is broken.
+      Higher velocities stretch the curve upwards.
+    </p>
+  </section>
 
-        <div id="plot"></div>
-    </div>
+  <section>
+    <h2>🌍 Real-World Considerations</h2>
+    <p>
+      The model assumes:
+      <ul>
+        <li>Flat launch/landing height</li>
+        <li>No air resistance</li>
+        <li>Still air and no spin</li>
+      </ul>
+    </p>
+    <p>
+      In real scenarios, these factors matter:
+      <ul>
+        <li><strong>Air drag:</strong> slows the projectile and reduces range</li>
+        <li><strong>Launch height:</strong> longer flight time, increases range</li>
+        <li><strong>Wind:</strong> adds or subtracts from velocity</li>
+        <li><strong>Magnus effect:</strong> from spin, curves the path</li>
+      </ul>
+      Such effects require numerical methods to simulate realistically.
+    </p>
+  </section>
 
-    <div>
-        <h2>📈 Graphical Representations</h2>
-        <p>
-            The graph above shows how the range changes with projection angle.
-            Maximum range is achieved at 45° when launched from flat ground.
-            You can observe how higher initial velocities scale the range.
-        </p>
-    </div>
+  <script>
+    function computeRange(v0, g, angleDeg, h0) {
+      const theta = angleDeg * Math.PI / 180;
+      const v0x = v0 * Math.cos(theta);
+      const v0y = v0 * Math.sin(theta);
+      // Time of flight with height: solve quadratic
+      const t_flight = (v0y + Math.sqrt(v0y * v0y + 2 * g * h0)) / g;
+      return v0x * t_flight;
+    }
 
-    <div>
-        <h2>🧠 Limitations and Real-World Factors</h2>
-        <p>
-            This ideal model assumes:
-            <ul>
-                <li>No air resistance</li>
-                <li>Flat launch and landing heights</li>
-                <li>No wind or drag</li>
-            </ul>
-        </p>
-        <p>
-            Realistic modeling can include:
-            <ul>
-                <li>Drag force (air resistance)</li>
-                <li>Uneven terrain or launch height</li>
-                <li>Wind vectors</li>
-                <li>Spinning effects (like Magnus force)</li>
-            </ul>
-            These can be simulated using numerical methods like Euler or Runge-Kutta solvers.
-        </p>
-    </div>
+    function updateAll() {
+      const v0 = parseFloat(document.getElementById('v0').value);
+      const g = parseFloat(document.getElementById('gravity').value);
+      const h0 = parseFloat(document.getElementById('height').value);
+      document.getElementById('v0Val').textContent = v0;
 
-    <div>
-        <h2>📜 Python Code (for reference or notebook submission)</h2>
-        <p>You can copy this into a Python file or Jupyter Notebook.</p>
-        <pre><code>import numpy as np
-import matplotlib.pyplot as plt
+      const angles = [];
+      const ranges = [];
+      for (let theta = 0; theta <= 90; theta += 0.5) {
+        angles.push(theta);
+        ranges.push(computeRange(v0, g, theta, h0));
+      }
 
-def compute_range(v0, g, angle_deg):
-    angle_rad = np.radians(angle_deg)
-    return (v0**2 * np.sin(2 * angle_rad)) / g
+      const trace = {
+        x: angles,
+        y: ranges,
+        type: 'scatter',
+        mode: 'lines',
+        line: { color: 'royalblue', width: 3 },
+        name: `v₀ = ${v0} m/s`
+      };
 
-v0 = 30.0
-g = 9.81
-angles = np.linspace(0, 90, 500)
-ranges = compute_range(v0, g, angles)
+      const layout = {
+        title: 'Range vs Angle of Projection',
+        xaxis: { title: 'Angle (degrees)' },
+        yaxis: { title: 'Range (meters)' }
+      };
 
-plt.plot(angles, ranges)
-plt.title(\"Range vs Angle of Projection\")
-plt.xlabel(\"Angle (degrees)\")
-plt.ylabel(\"Range (meters)\")
-plt.grid(True)
-plt.show()</code></pre>
-    </div>
+      Plotly.newPlot('plot', [trace], layout);
+    }
 
-    <script>
-        function computeRange(v0, g, angleDeg) {
-            const angleRad = angleDeg * Math.PI / 180;
-            return (Math.pow(v0, 2) * Math.sin(2 * angleRad)) / g;
-        }
-
-        function updatePlot() {
-            const g = 9.81;
-            const v0 = parseFloat(document.getElementById('velocity').value);
-            document.getElementById('velocityValue').textContent = v0;
-
-            const angles = [];
-            const ranges = [];
-            for (let theta = 0; theta <= 90; theta += 0.5) {
-                angles.push(theta);
-                ranges.push(computeRange(v0, g, theta));
-            }
-
-            const trace = {
-                x: angles,
-                y: ranges,
-                type: 'scatter',
-                mode: 'lines',
-                line: { color: 'royalblue' },
-                name: `v₀ = ${v0} m/s`
-            };
-
-            const layout = {
-                title: 'Range vs Angle of Projection',
-                xaxis: { title: 'Angle (degrees)' },
-                yaxis: { title: 'Range (meters)' }
-            };
-
-            Plotly.newPlot('plot', [trace], layout);
-        }
-
-        updatePlot();  // initial render
-    </script>
+    updateAll();
+  </script>
 
 </body>
 </html>
