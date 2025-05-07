@@ -42,10 +42,10 @@
 
 <h2>📘 Theoretical Foundation</h2>
 <p>The equation governing a forced damped pendulum is:</p>
-<p><span id="equation"></span></p>
+<p id="equation"></p>
 
 <script>
-  MathJax.Hub.Queue(["Typeset", MathJax.Hub, "equation"]);
+  MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
   document.getElementById("equation").innerHTML = '\\( \\frac{d^2\\theta}{dt^2} + \\gamma \\frac{d\\theta}{dt} + \\omega_0^2 \\sin(\\theta) = A \\cos(\\omega t) \\)';
 </script>
 
