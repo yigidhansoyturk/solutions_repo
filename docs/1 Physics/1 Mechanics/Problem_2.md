@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Forced Damped Pendulum Simulation</title>
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <meta charset="UTF-8">
+  <title>Forced Damped Pendulum Simulator</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -19,104 +18,145 @@
     h1, h2, h3 {
       color: #2c3e50;
     }
-    #controls label {
-      font-weight: bold;
-      margin-right: 10px;
+    .controls input {
+      margin: 5px 10px;
+    }
+    .scenario-btn {
+      margin: 10px 5px;
+      padding: 5px 10px;
+      cursor: pointer;
     }
     #plot {
-      margin-top: 20px;
+      margin-top: 30px;
     }
-    input {
-      margin-bottom: 10px;
+    code {
+      background: #f4f4f4;
+      padding: 3px 6px;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
-
   <h1>🌀 Investigating the Dynamics of a Forced Damped Pendulum</h1>
 
   <section>
     <h2>📘 Theoretical Foundation</h2>
     <p>
-      The motion of a forced damped pendulum is described by the nonlinear second-order differential equation:
+      The forced damped pendulum is governed by the nonlinear second-order differential equation:
     </p>
+    <p><strong>
+      \[ \frac{d^2\theta}{dt^2} + b \frac{d\theta}{dt} + \frac{g}{L} \sin(\theta) = A \cos(\omega t) \]
+    </strong></p>
     <p>
-      \[
-      \frac{d^2\theta}{dt^2} + b\frac{d\theta}{dt} + \frac{g}{L}\sin(\theta) = A\cos(\omega t)
-      \]
-    </p>
-    <p>
-      Here, \( \theta \) is the angular displacement, \( b \) is the damping coefficient, \( g \) is gravitational acceleration, \( L \) is the length of the pendulum, \( A \) is the forcing amplitude, and \( \omega \) is the driving frequency.
+      Here:
+      <ul>
+        <li><code>\( \theta \)</code>: Angular displacement</li>
+        <li><code>\( b \)</code>: Damping coefficient</li>
+        <li><code>\( L \)</code>: Length of pendulum</li>
+        <li><code>\( A \)</code>: Driving amplitude</li>
+        <li><code>\( \omega \)</code>: Driving angular frequency</li>
+      </ul>
+      This system can exhibit a wide variety of behaviors: from simple oscillations to chaotic motion.
     </p>
   </section>
 
   <section>
-    <h2>🧪 Simulation Controls</h2>
-    <div id="controls">
-      <label>Damping (b):</label>
-      <input type="number" id="b" value="0.5" step="0.1"><br>
-      <label>Driving Amplitude (A):</label>
-      <input type="number" id="A" value="1.2" step="0.1"><br>
-      <label>Driving Frequency (ω):</label>
-      <input type="number" id="omega" value="2/3" step="0.01"><br>
-      <label>Length (L):</label>
-      <input type="number" id="L" value="9.8" step="0.1"><br>
-      <button onclick="simulate()">Run Simulation</button>
+    <h2>🎛 Simulation Controls</h2>
+    <div class="controls">
+      <label>Damping (b): <input type="number" id="b" value="0.2" step="0.01"></label>
+      <label>Amplitude (A): <input type="number" id="A" value="1.2" step="0.1"></label>
+      <label>Omega (ω): <input type="number" id="omega" value="2.0" step="0.1"></label>
+      <label>Length (L): <input type="number" id="L" value="1.0" step="0.1"></label>
+      <label>θ₀: <input type="number" id="theta0" value="0.2" step="0.1"></label>
+      <label>θ̇₀: <input type="number" id="v0" value="0.0" step="0.1"></label>
+      <button onclick="runSimulation()">Run Simulation</button>
     </div>
-    <div id="plot"></div>
+
+    <h3>💡 Example Scenarios:</h3>
+    <button class="scenario-btn" onclick="loadScenario('periodic')">Periyodik (b=0.2, A=1.2, ω=2.0)</button>
+    <button class="scenario-btn" onclick="loadScenario('resonance')">Rezonans (b=0.05, A=0.9, ω≈√(g/L))</button>
+    <button class="scenario-btn" onclick="loadScenario('chaotic')">Kaotik (b=0.1, A=1.5, θ₀=1.5)</button>
   </section>
 
+  <div id="plot"></div>
+
   <section>
-    <h2>📊 Interpretation</h2>
-    <p>
-      The graph below shows the time evolution of the angle \( \theta(t) \) under the influence of damping and external periodic forcing.
-      The solution is obtained numerically using the Euler method. As parameters change, the motion may become periodic, quasi-periodic, or chaotic.
+    <h2>📊 What You See on the Graph</h2>
+    <p id="description">
+      The plot below shows the angular displacement <code>θ(t)</code> over time, based on the chosen parameters. 
+      By changing the damping, driving amplitude, and frequency, you can observe transitions between regular and chaotic motion.
     </p>
   </section>
 
   <script>
-    function simulate() {
-      const b = parseFloat(document.getElementById("b").value);
-      const A = parseFloat(document.getElementById("A").value);
-      const omega = eval(document.getElementById("omega").value);
-      const L = parseFloat(document.getElementById("L").value);
-      const g = 9.8;
-
-      let t = 0, dt = 0.04;
-      let theta = 0.2;
-      let omega_theta = 0;
-      const T = 100;
-      const time = [], angles = [];
-
-      for (let i = 0; i < T / dt; i++) {
-        const d2theta = -b * omega_theta - (g / L) * Math.sin(theta) + A * Math.cos(omega * t);
-        omega_theta += d2theta * dt;
-        theta += omega_theta * dt;
-        t += dt;
-        time.push(t);
-        angles.push(theta);
-      }
-
-      const trace = {
-        x: time,
-        y: angles,
-        type: 'scatter',
-        mode: 'lines',
-        line: { color: 'tomato', width: 2 },
-        name: 'θ(t)'
-      };
-
-      const layout = {
-        title: 'Forced Damped Pendulum - Angular Displacement vs Time',
-        xaxis: { title: 'Time (s)' },
-        yaxis: { title: 'θ (radians)' }
-      };
-
-      Plotly.newPlot('plot', [trace], layout);
+    function pendulumODE(t, state, b, g, L, A, omega) {
+      const [theta, v] = state;
+      return [v, -b * v - (g / L) * Math.sin(theta) + A * Math.cos(omega * t)];
     }
 
-    simulate();
-  </script>
+    function rungeKutta(f, y0, t0, dt, steps, params) {
+      let t = t0;
+      let y = y0;
+      const result = [[t, ...y]];
 
+      for (let i = 0; i < steps; i++) {
+        const k1 = f(t, y, ...params);
+        const k2 = f(t + dt / 2, y.map((yi, j) => yi + dt / 2 * k1[j]), ...params);
+        const k3 = f(t + dt / 2, y.map((yi, j) => yi + dt / 2 * k2[j]), ...params);
+        const k4 = f(t + dt, y.map((yi, j) => yi + dt * k3[j]), ...params);
+        y = y.map((yi, j) => yi + dt / 6 * (k1[j] + 2*k2[j] + 2*k3[j] + k4[j]));
+        t += dt;
+        result.push([t, ...y]);
+      }
+      return result;
+    }
+
+    function runSimulation() {
+      const b = parseFloat(document.getElementById('b').value);
+      const A = parseFloat(document.getElementById('A').value);
+      const omega = parseFloat(document.getElementById('omega').value);
+      const L = parseFloat(document.getElementById('L').value);
+      const theta0 = parseFloat(document.getElementById('theta0').value);
+      const v0 = parseFloat(document.getElementById('v0').value);
+
+      const data = rungeKutta(pendulumODE, [theta0, v0], 0, 0.05, 1000, [b, 9.81, L, A, omega]);
+      const t = data.map(d => d[0]);
+      const theta = data.map(d => d[1]);
+
+      Plotly.newPlot('plot', [{ x: t, y: theta, type: 'scatter', mode: 'lines', line: { color: 'blue' } }], {
+        title: 'Angular Displacement Over Time',
+        xaxis: { title: 'Time (s)' },
+        yaxis: { title: 'θ (rad)' }
+      });
+    }
+
+    function loadScenario(type) {
+      if (type === 'periodic') {
+        document.getElementById('b').value = 0.2;
+        document.getElementById('A').value = 1.2;
+        document.getElementById('omega').value = 2.0;
+        document.getElementById('theta0').value = 0.2;
+        document.getElementById('v0').value = 0.0;
+        document.getElementById('description').innerText = "This example shows periodic behavior with light damping and moderate forcing. The pendulum synchronizes with the driving force.";
+      } else if (type === 'resonance') {
+        document.getElementById('b').value = 0.05;
+        document.getElementById('A').value = 0.9;
+        document.getElementById('omega').value = 3.13;
+        document.getElementById('theta0').value = 0.2;
+        document.getElementById('v0').value = 0.0;
+        document.getElementById('description').innerText = "Here the driving frequency matches the system's natural frequency, causing resonance and increasing amplitude dramatically.";
+      } else if (type === 'chaotic') {
+        document.getElementById('b').value = 0.1;
+        document.getElementById('A').value = 1.5;
+        document.getElementById('omega').value = 2.0;
+        document.getElementById('theta0').value = 1.5;
+        document.getElementById('v0').value = 0.0;
+        document.getElementById('description').innerText = "With strong forcing and large initial angle, the motion becomes chaotic. Even tiny changes lead to very different outcomes.";
+      }
+      runSimulation();
+    }
+
+    runSimulation();
+  </script>
 </body>
 </html>
