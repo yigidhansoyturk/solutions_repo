@@ -122,143 +122,145 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Forced Damped Pendulum</title>
+<title>Forced Damped Pendulum Simulation</title>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&amp;display=swap" rel="stylesheet"/>
 <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to right, #eef2f7, #d9e2ec);
-      color: #2d3748;
-    }
-    .container {
-      max-width: 960px;
-      margin: 40px auto;
-      padding: 40px;
-      background-color: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      font-size: 3rem;
-      color: #1a202c;
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    h2 {
-      font-size: 2rem;
-      margin-top: 2rem;
-      color: #2b6cb0;
-      border-bottom: 2px solid #cbd5e0;
-      padding-bottom: 0.3rem;
-    }
-    p, ul {
-      font-size: 1.125rem;
-      line-height: 1.75;
-    }
-    ul {
-      margin-left: 1.5rem;
-    }
-    pre {
-      background-color: #2d3748;
-      color: #f7fafc;
-      padding: 20px;
-      border-radius: 10px;
-      overflow-x: auto;
-      font-size: 0.95rem;
-    }
-    code {
-      font-family: 'Courier New', monospace;
-    }
-    footer {
-      text-align: center;
-      margin-top: 3rem;
-      font-size: 0.9rem;
-      color: #718096;
-    }
-  </style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px auto;
+            max-width: 960px;
+            background-color: #fefefe;
+            color: #2d3436;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: Consolas, monospace;
+        }
+        .control-group {
+            margin-bottom: 10px;
+        }
+        label {
+            font-weight: bold;
+        }
+        #plot {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-<h1>Investigating the Dynamics of a Forced Damped Pendulum</h1>
-<h2>Motivation</h2>
+<h1>🌀 Investigating the Dynamics of a Forced Damped Pendulum</h1>
+<h2>📘 Theoretical Foundation</h2>
+<p>The equation governing a forced damped pendulum is:</p>
+<pre><code>\( \frac{d^2\theta}{dt^2} + \gamma \frac{d\theta}{dt} + \omega_0^2 \sin(\theta) = A \cos(\omega t) \)</code></pre>
 <p>
-      The forced damped pendulum is a captivating example of a physical system with intricate behavior resulting from the interplay of damping, restoring forces, and external driving forces. By introducing both damping and external periodic forcing, the system demonstrates a transition from simple harmonic motion to a rich spectrum of dynamics, including resonance, chaos, and quasiperiodic behavior.
-    </p>
-<p>
-      These phenomena are a foundation for understanding complex real-world systems, such as driven oscillators, climate systems, and mechanical structures under periodic stress. By varying the parameters of the external force—amplitude and frequency—a diverse class of solutions can be observed, highlighting synchronized oscillations, chaotic motion, and resonance phenomena.
-    </p>
-<h2>Theoretical Foundation</h2>
-<p>The motion of a forced damped pendulum is governed by the differential equation:</p>
-<pre><code>d²θ/dt² + b*dθ/dt + ω₀²*sin(θ) = A*cos(ω*t)</code></pre>
+Where:
 <ul>
-<li><strong>b</strong>: damping coefficient</li>
-<li><strong>ω₀</strong>: natural angular frequency</li>
-<li><strong>A</strong>: amplitude of the external periodic force</li>
-<li><strong>ω</strong>: driving frequency</li>
+<li><strong>\( \gamma \)</strong>: damping coefficient</li>
+<li><strong>\( \omega_0 \)</strong>: natural frequency</li>
+<li><strong>\( A \)</strong>: driving amplitude</li>
+<li><strong>\( \omega \)</strong>: driving frequency</li>
 </ul>
-<p>For small angles, <code>sin(θ) ≈ θ</code>, leading to a linearized form suitable for analytical solutions. However, full dynamics require numerical exploration due to nonlinearity and external forcing.</p>
-<h2>Analysis of Dynamics</h2>
+This second-order nonlinear differential equation exhibits behaviors ranging from periodic motion to chaos.
+</p>
+<h2>🧪 Simulation Controls</h2>
+<div class="control-group">
+<label for="gamma">Damping Coefficient (\( \gamma \)):</label>
+<input id="gamma" max="1" min="0" oninput="simulate()" step="0.01" type="range" value="0.2"/>
+<span id="gammaVal">0.2</span>
+</div>
+<div class="control-group">
+<label for="A">Driving Amplitude (\( A \)):</label>
+<input id="A" max="2" min="0" oninput="simulate()" step="0.1" type="range" value="1"/>
+<span id="AVal">1</span>
+</div>
+<div class="control-group">
+<label for="omega">Driving Frequency (\( \omega \)):</label>
+<input id="omega" max="5" min="0.1" oninput="simulate()" step="0.1" type="range" value="1.5"/>
+<span id="omegaVal">1.5</span>
+</div>
+<div id="plot"></div>
+<h2>📈 Dynamics &amp; Visualizations</h2>
+<p>The graph above illustrates the angular displacement of a forced damped pendulum over time. Depending on your parameter choices, you may observe:</p>
 <ul>
-<li>Effect of damping coefficient, driving amplitude, and frequency on the pendulum's behavior</li>
-<li>Transition between regular oscillations and chaotic motion</li>
+<li>Simple harmonic motion</li>
+<li>Resonant amplification</li>
+<li>Chaotic dynamics</li>
 </ul>
-<h2>Python Simulation</h2>
+<h2>📜 Python Simulation Code</h2>
+<p>The following Python code snippet simulates and plots the pendulum's motion using the Runge-Kutta method:</p>
 <pre><code>import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 
-def pendulum(t, y, b, omega0, A, omega):
-    theta, omega_ = y
-    dydt = [omega_, -b * omega_ - omega0**2 * np.sin(theta) + A * np.cos(omega * t)]
-    return dydt
+def pendulum(t, y, gamma, A, omega):
+    theta, omega_p = y
+    dtheta_dt = omega_p
+    domega_dt = -gamma * omega_p - np.sin(theta) + A * np.cos(omega * t)
+    return [dtheta_dt, domega_dt]
 
-b = 0.5
-omega0 = 1.5
-A = 1.2
-omega = 2.0
+# Parameters
+gamma = 0.2
+A = 1.0
+omega = 1.5
+y0 = [0.1, 0]
+t = np.linspace(0, 50, 1000)
 
-t_span = [0, 40]
-t_eval = np.linspace(*t_span, 1000)
-
-sol = solve_ivp(pendulum, t_span, [0.1, 0], args=(b, omega0, A, omega), t_eval=t_eval)
+sol = solve_ivp(pendulum, [0, 50], y0, t_eval=t, args=(gamma, A, omega))
 
 plt.plot(sol.t, sol.y[0])
-plt.title("Forced Damped Pendulum")
-plt.xlabel("Time (s)")
-plt.ylabel("Angle (rad)")
+plt.xlabel('Time')
+plt.ylabel('Theta (rad)')
+plt.title('Forced Damped Pendulum')
 plt.grid(True)
 plt.show()</code></pre>
-<h2>Practical Applications</h2>
-<ul>
-<li>Energy harvesting in mechanical and piezoelectric systems</li>
-<li>Bridge and building resonance analysis</li>
-<li>Driven RLC circuits in electronics</li>
-</ul>
-<h2>Limitations and Extensions</h2>
-<p><strong>Limitations:</strong></p>
-<ul>
-<li>Linear damping approximation</li>
-<li>Sinusoidal driving force only</li>
-<li>Does not account for external noise or stochastic effects</li>
-</ul>
-<p><strong>Possible Extensions:</strong></p>
-<ul>
-<li>Nonlinear damping (e.g., quadratic or Coulomb friction)</li>
-<li>Non-periodic or real-world data-driven forcing</li>
-<li>Visualization using bifurcation diagrams and Poincaré sections</li>
-</ul>
-<h2>Advanced Visualizations</h2>
-<p>
-      Phase portraits and Poincaré maps reveal the complex landscape of motion—transitions from order to chaos and back. Bifurcation diagrams highlight how varying a single parameter leads to dramatically different dynamics.
-    </p>
-<footer>
-      © 2025 Physics Simulations | Investigating Forced Damped Pendulum Dynamics
-    </footer>
-</div>
+<script>
+function simulate() {
+    const gamma = parseFloat(document.getElementById('gamma').value);
+    const A = parseFloat(document.getElementById('A').value);
+    const omega = parseFloat(document.getElementById('omega').value);
+
+    document.getElementById('gammaVal').textContent = gamma;
+    document.getElementById('AVal').textContent = A;
+    document.getElementById('omegaVal').textContent = omega;
+
+    let t = [], theta = [], w = 0, angle = 0, dt = 0.05;
+    let maxT = 50;
+
+    for (let time = 0; time <= maxT; time += dt) {
+        let dw = -gamma * w - Math.sin(angle) + A * Math.cos(omega * time);
+        w += dw * dt;
+        angle += w * dt;
+        t.push(time);
+        theta.push(angle);
+    }
+
+    const trace = {
+        x: t,
+        y: theta,
+        mode: 'lines',
+        line: { color: 'crimson' },
+        name: 'Theta(t)'
+    };
+
+    const layout = {
+        title: 'Forced Damped Pendulum Motion',
+        xaxis: { title: 'Time (s)' },
+        yaxis: { title: 'Angular Displacement (rad)' }
+    };
+
+    Plotly.newPlot('plot', [trace], layout);
+}
+
+simulate();
+</script>
 </body>
 </html>
 </div>
