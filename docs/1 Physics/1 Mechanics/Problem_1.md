@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>Projectile Motion: Range vs Angle</title>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <script type="text/javascript" async 
+    src="https://cdn.jsdelivr.net/npm/mathjax@2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
     body {
