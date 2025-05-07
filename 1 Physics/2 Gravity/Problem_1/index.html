@@ -175,11 +175,11 @@
 <h2>Motivation</h2>
 <p>Kepler's Third Law is a cornerstone of celestial mechanics. It describes the relationship between the square of the orbital period (\(T\)) and the cube of the orbital radius (\(r\)), stating that:</p>
 <p><strong>\(T^2 \propto r^3\)</strong></p>
-<p>This relationship helps astronomers understand planetary motions, satellite orbits, and gravitational interactions. By analyzing this, one can connect gravity with real-world phenomena such as satellite orbits and planetary systems.</p>
+<p>This relationship, while simple, is a foundational principle in celestial mechanics, providing insights into planetary motion and gravitational interactions. It allows us to understand satellite orbits and planetary systems and can be used to determine the mass of celestial bodies or distances in space.</p>
 </section>
 <section class="section">
 <h2>Theoretical Foundation</h2>
-<p>For circular orbits, we can derive the relationship between the orbital period and orbital radius using Newton’s Law of Universal Gravitation and centripetal force. The orbital period (\(T\)) is derived as follows:</p>
+<p>For circular orbits, we can derive the relationship between the orbital period and orbital radius using Newton’s Law of Universal Gravitation and centripetal force.</p>
 <pre>
         F = G * M * m / r^2   (Gravitational force)
         F = m * v^2 / r       (Centripetal force)
@@ -200,11 +200,11 @@
 </section>
 <section class="section">
 <h2>Real-world Example: Moon’s Orbit Around Earth</h2>
-<p>The Moon's orbital radius is 384,400 km, and its orbital period is about 27.3 days. Using Kepler’s Third Law, we can calculate the relationship between \(T^2\) and \(r^3\) for this system.</p>
+<p>The Moon's orbital radius is 384,400 km, and its orbital period is about 27.3 days. Using Kepler’s Third Law, we can verify that the Moon’s orbital period and radius follow the expected relationship, and use it to calculate the mass of Earth if needed.</p>
 </section>
 <section class="section">
 <h2>Computational Model</h2>
-<p>Below is a Python implementation that simulates the orbital period and radius for various orbits and graphs the relationship \(T^2 \propto r^3\). This can be used to verify Kepler's Third Law computationally.</p>
+<p>Below is a Python implementation that simulates circular orbits and visually demonstrates the relationship between orbital period and radius.</p>
 <pre>
 # Python code for simulating orbital periods and radii
 import numpy as np
@@ -212,7 +212,7 @@ import matplotlib.pyplot as plt
 
 # Constants
 G = 6.67430e-11  # Gravitational constant in m^3 kg^-1 s^-2
-M = 5.972e24     # Mass of Earth in kg
+M = 5.972e24     # Mass of Earth in kg (can be adjusted for other celestial bodies)
 
 # Function to calculate orbital period
 def orbital_period(r):
@@ -230,7 +230,7 @@ r_cubed = radii**3
 
 # Plotting T^2 vs r^3
 plt.figure(figsize=(8, 6))
-plt.plot(r_cubed, T_squared, label="T^2 vs r^3")
+plt.plot(r_cubed, T_squared, label=f'Mass of Earth = {M} kg')
 plt.xlabel('r^3 (m^3)')
 plt.ylabel('T^2 (s^2)')
 plt.title("Kepler's Third Law: T^2 vs r^3")
@@ -247,7 +247,18 @@ plt.show()
 </section>
 <section class="section">
 <h2>Further Discussion</h2>
-<p>This relationship can also be extended to elliptical orbits. Kepler's Third Law still holds, but the semi-major axis (\(a\)) of the ellipse is used in place of the radius \(r\), yielding \(T^2 \propto a^3\). The law applies to other celestial bodies and allows scientists to calculate orbital properties for a wide range of systems.</p>
+<p>This relationship can also be extended to elliptical orbits. Kepler's Third Law still holds, but the semi-major axis (\(a\)) is used instead of the orbital radius \(r\). In this case, the relationship becomes:</p>
+<p><strong>\(T^2 \propto a^3\)</strong></p>
+<p>This modification accounts for the varying distance in elliptical orbits, but the principle remains the same. The law applies to other celestial bodies and allows scientists to calculate orbital properties for a wide range of systems.</p>
+</section>
+<section class="section">
+<h2>Deliverables</h2>
+<ul>
+<li><strong>Markdown Document with Python Script:</strong> The Python code is included above for simulating circular orbits and plotting the relationship between orbital period and radius.</li>
+<li><strong>Description of the Relationship:</strong> The derived equation \( T^2 \propto r^3 \) and its implications are discussed in the document.</li>
+<li><strong>Graphical Representation:</strong> The graph of \( T^2 \) vs \( r^3 \) is provided, showing the linear relationship between orbital period and orbital radius.</li>
+<li><strong>Discussion of Elliptical Orbits:</strong> The extension of Kepler’s Third Law to elliptical orbits is discussed, with the semi-major axis replacing the radius.</li>
+</ul>
 </section>
 </div>
 <script>
