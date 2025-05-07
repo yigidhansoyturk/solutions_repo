@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Forced Damped Pendulum Simulation</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,31 +42,35 @@
 
 <h2>📘 Theoretical Foundation</h2>
 <p>The equation governing a forced damped pendulum is:</p>
-<pre><code>\( \frac{d^2\theta}{dt^2} + \gamma \frac{d\theta}{dt} + \omega_0^2 \sin(\theta) = A \cos(\omega t) \)</code></pre>
-<p>
-Where:
+<p><span id="equation"></span></p>
+
+<script>
+  MathJax.Hub.Queue(["Typeset", MathJax.Hub, "equation"]);
+  document.getElementById("equation").innerHTML = '\\( \\frac{d^2\\theta}{dt^2} + \\gamma \\frac{d\\theta}{dt} + \\omega_0^2 \\sin(\\theta) = A \\cos(\\omega t) \\)';
+</script>
+
+<p>Where:</p>
 <ul>
-  <li><strong>\( \gamma \)</strong>: damping coefficient</li>
-  <li><strong>\( \omega_0 \)</strong>: natural frequency</li>
-  <li><strong>\( A \)</strong>: driving amplitude</li>
-  <li><strong>\( \omega \)</strong>: driving frequency</li>
+  <li><strong>\\( \\gamma \\)</strong>: damping coefficient</li>
+  <li><strong>\\( \\omega_0 \\)</strong>: natural frequency</li>
+  <li><strong>\\( A \\)</strong>: driving amplitude</li>
+  <li><strong>\\( \\omega \\)</strong>: driving frequency</li>
 </ul>
-This second-order nonlinear differential equation exhibits behaviors ranging from periodic motion to chaos.
-</p>
+<p>This second-order nonlinear differential equation exhibits behaviors ranging from periodic motion to chaos.</p>
 
 <h2>🧪 Simulation Controls</h2>
 <div class="control-group">
-    <label for="gamma">Damping Coefficient (\( \gamma \)):</label>
+    <label for="gamma">Damping Coefficient (\\( \\gamma \\)):</label>
     <input type="range" id="gamma" min="0" max="1" step="0.01" value="0.2" oninput="simulate()">
     <span id="gammaVal">0.2</span>
 </div>
 <div class="control-group">
-    <label for="A">Driving Amplitude (\( A \)):</label>
+    <label for="A">Driving Amplitude (\\( A \\)):</label>
     <input type="range" id="A" min="0" max="2" step="0.1" value="1" oninput="simulate()">
     <span id="AVal">1</span>
 </div>
 <div class="control-group">
-    <label for="omega">Driving Frequency (\( \omega \)):</label>
+    <label for="omega">Driving Frequency (\\( \\omega \\)):</label>
     <input type="range" id="omega" min="0.1" max="5" step="0.1" value="1.5" oninput="simulate()">
     <span id="omegaVal">1.5</span>
 </div>
