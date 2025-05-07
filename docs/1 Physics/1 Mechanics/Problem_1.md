@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Projectile Motion: Range vs Angle</title>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -37,13 +38,24 @@
       margin-top: 0;
     }
 
+    /* Style for formulas to keep the size consistent */
     .formula {
-      font-size: 2em;
+      font-size: 1.5em;
       font-family: 'Times New Roman', Times, serif;
       font-weight: bold;
       text-align: center;
       margin: 20px 0;
       color: #e74c3c;
+    }
+
+    /* Small formulas for inline usage */
+    .small-formula {
+      font-size: 1.2em;
+      font-family: 'Times New Roman', Times, serif;
+      font-weight: normal;
+      text-align: center;
+      margin: 10px 0;
+      color: #333;
     }
   </style>
 </head>
@@ -57,16 +69,17 @@
       Assuming flat terrain and no air resistance, the horizontal range is given by the equation:
     </p>
     
+    <!-- Larger formula for the main equation -->
     <div class="formula">
       \( R = \frac{{v_0^2 \cdot \sin(2\theta)}}{g} \)
     </div>
 
     <p>This is derived from the motion's horizontal and vertical components:</p>
     <ul>
-      <li>\( v_x = v_0 \cdot \cos(\theta) \) (horizontal component)</li>
-      <li>\( v_y = v_0 \cdot \sin(\theta) \) (vertical component)</li>
-      <li>\( \text{Time of flight} = \frac{2 \cdot v_y}{g} \)</li>
-      <li>\( \text{Range} = v_x \cdot \text{time} \)</li>
+      <li class="small-formula">\(\ v_x = v_0 \cdot \cos(\theta) \) (horizontal component)</li>
+      <li class="small-formula">\(\ v_y = v_0 \cdot \sin(\theta) \) (vertical component)</li>
+      <li class="small-formula">\(\ \text{Time of flight} = \frac{2 \cdot v_y}{g} \)</li>
+      <li class="small-formula">\(\ \text{Range} = v_x \cdot \text{time} \)</li>
     </ul>
     <p>At an ideal launch angle of 45°, the range reaches its maximum value. We will explore how the range varies with different angles and initial velocities.</p>
   </section>
