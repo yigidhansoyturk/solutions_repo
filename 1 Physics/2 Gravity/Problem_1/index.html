@@ -122,122 +122,174 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Physics Simulations</title>
+<title>Orbital Period and Orbital Radius - Kepler's Third Law</title>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&amp;display=swap" rel="stylesheet"/>
 <style>
     body {
-      font-family: 'Roboto', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to right, #eef2f7, #d9e2ec);
-      color: #2d3748;
-    }
-    .container {
-      max-width: 960px;
-      margin: 40px auto;
-      padding: 40px;
-      background-color: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      font-size: 3rem;
-      color: #1a202c;
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    h2 {
-      font-size: 2rem;
-      margin-top: 2rem;
-      color: #2b6cb0;
-      border-bottom: 2px solid #cbd5e0;
-      padding-bottom: 0.3rem;
-    }
-    p, ul {
-      font-size: 1.125rem;
-      line-height: 1.75;
-    }
-    ul {
-      margin-left: 1.5rem;
-    }
-    pre {
-      background-color: #2d3748;
-      color: #f7fafc;
+      font-family: Arial, sans-serif;
+      margin: 0 auto;
+      max-width: 1000px;
       padding: 20px;
-      border-radius: 10px;
-      overflow-x: auto;
-      font-size: 0.95rem;
+      background-color: #fefefe;
+      color: #333;
+      line-height: 1.6;
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+    .section {
+      margin-bottom: 30px;
     }
     code {
-      font-family: 'Courier New', monospace;
+      background: #f4f4f4;
+      padding: 3px 6px;
+      border-radius: 4px;
     }
-    .plot {
-      margin-top: 2rem;
+    .button {
+      padding: 10px 15px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      margin-top: 20px;
     }
-    footer {
-      text-align: center;
-      margin-top: 3rem;
-      font-size: 0.9rem;
-      color: #718096;
+    .button:hover {
+      background-color: #45a049;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    #plot {
+      margin-top: 40px;
+      height: 400px;
     }
   </style>
 </head>
 <body>
 <div class="container">
 <h1>Orbital Period and Orbital Radius</h1>
+<section class="section">
 <h2>Motivation</h2>
-<p>
-      Kepler's Third Law reveals the elegant relationship between the square of the orbital period and the cube of the orbital radius for celestial bodies in circular orbits. This fundamental principle of astronomy allows us to understand planetary motion, calculate orbital characteristics, and grasp gravitational interactions at astronomical scales.
-    </p>
+<p>Kepler's Third Law is a cornerstone of celestial mechanics. It describes the relationship between the square of the orbital period (\(T\)) and the cube of the orbital radius (\(r\)), stating that:</p>
+<p><strong>\(T^2 \propto r^3\)</strong></p>
+<p>This relationship helps astronomers understand planetary motions, satellite orbits, and gravitational interactions. By analyzing this, one can connect gravity with real-world phenomena such as satellite orbits and planetary systems.</p>
+</section>
+<section class="section">
 <h2>Theoretical Foundation</h2>
-<p>
-      For a body in circular orbit, the gravitational force provides the necessary centripetal force:
-    </p>
-<p>\[ F = G \cdot \frac{Mm}{r^2} = \frac{mv^2}{r} \]</p>
-<p>Substituting the orbital velocity \( v = \frac{2\pi r}{T} \) into the equation and solving for \( T \) gives:</p>
-<p>\[ T^2 = \frac{4\pi^2}{GM} \cdot r^3 \]</p>
-<p>This derivation highlights how orbital period depends on the radius and the mass of the central body.</p>
-<h2>Python Simulation</h2>
-<pre><code>import numpy as np
-import plotly.graph_objs as go
-from plotly.offline import plot
-
-G = 6.67430e-11  # gravitational constant
-M = 5.972e24     # mass of Earth in kg
-radii = np.linspace(6.4e6, 4.2e7, 100)
-periods = 2 * np.pi * np.sqrt(radii**3 / (G * M))
-
-fig = go.Figure()
-fig.add_trace(go.Scatter(x=radii / 1e6, y=periods / 3600, mode='lines', name='Period'))
-fig.update_layout(title='Orbital Period vs Orbital Radius',
-                  xaxis_title='Orbital Radius (10⁶ m)',
-                  yaxis_title='Orbital Period (hours)',
-                  template='plotly_white')
-plot(fig, filename='orbital_period_radius.html')</code></pre>
-<div class="plot" id="graph"></div>
-<h2>Applications</h2>
+<p>For circular orbits, we can derive the relationship between the orbital period and orbital radius using Newton’s Law of Universal Gravitation and centripetal force. The orbital period (\(T\)) is derived as follows:</p>
+<pre>
+        F = G * M * m / r^2   (Gravitational force)
+        F = m * v^2 / r       (Centripetal force)
+        v = √(G * M / r)
+        T = 2πr / v
+        T^2 = 4π²r³ / G * M
+      </pre>
+<p>This gives us the fundamental relationship:</p>
+<p><strong>\(T^2 \propto r^3\)</strong></p>
+</section>
+<section class="section">
+<h2>Implications</h2>
+<p>This relationship is crucial for determining planetary masses, distances, and orbital periods. For instance:</p>
 <ul>
-<li>Used in calculating distances to planets and satellites</li>
-<li>Essential in designing satellite orbits and interplanetary missions</li>
-<li>Connects Newton’s laws with astronomical observations</li>
+<li><strong>Moon’s Orbit around Earth:</strong> The orbital period is about 27.3 days, and the radius is 384,400 km.</li>
+<li><strong>Earth’s Orbit around the Sun:</strong> The orbital period is 1 year, and the radius is 1 AU (astronomical unit).</li>
 </ul>
-<h2>Beyond Circular Orbits</h2>
-<p>
-      Kepler's Third Law can be extended to elliptical orbits using the semi-major axis in place of radius. This extension enables broader application to real-world planetary motion.
-    </p>
-<h2>Discussion</h2>
-<ul>
-<li><strong>Limitations:</strong> Assumes circular orbits and neglects perturbations, atmospheric drag, or relativistic effects</li>
-<li><strong>Extensions:</strong> Elliptical orbit dynamics, non-Keplerian forces (e.g., solar radiation pressure)</li>
-</ul>
-<footer>
-      © 2025 Physics Simulations | Orbital Period and Radius Exploration
-    </footer>
+</section>
+<section class="section">
+<h2>Real-world Example: Moon’s Orbit Around Earth</h2>
+<p>The Moon's orbital radius is 384,400 km, and its orbital period is about 27.3 days. Using Kepler’s Third Law, we can calculate the relationship between \(T^2\) and \(r^3\) for this system.</p>
+</section>
+<section class="section">
+<h2>Computational Model</h2>
+<p>Below is a Python implementation that simulates the orbital period and radius for various orbits and graphs the relationship \(T^2 \propto r^3\). This can be used to verify Kepler's Third Law computationally.</p>
+<pre>
+# Python code for simulating orbital periods and radii
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Constants
+G = 6.67430e-11  # Gravitational constant in m^3 kg^-1 s^-2
+M = 5.972e24     # Mass of Earth in kg
+
+# Function to calculate orbital period
+def orbital_period(r):
+    return 2 * np.pi * np.sqrt(r**3 / (G * M))
+
+# Radii (in meters)
+radii = np.linspace(1e6, 1e8, 100)
+
+# Orbital periods corresponding to the radii
+periods = orbital_period(radii)
+
+# Calculate T^2 and r^3
+T_squared = periods**2
+r_cubed = radii**3
+
+# Plotting T^2 vs r^3
+plt.figure(figsize=(8, 6))
+plt.plot(r_cubed, T_squared, label="T^2 vs r^3")
+plt.xlabel('r^3 (m^3)')
+plt.ylabel('T^2 (s^2)')
+plt.title("Kepler's Third Law: T^2 vs r^3")
+plt.grid(True)
+plt.legend()
+plt.show()
+      </pre>
+<button class="button" onclick="alert('Python code example for orbital period and radius is shown above.')">See Python Code</button>
+</section>
+<section class="section">
+<h2>Graphical Representation</h2>
+<p>The plot below shows the relationship between \(T^2\) and \(r^3\) based on a simulated set of orbital radii. The linear relationship is clear, confirming Kepler’s Third Law.</p>
+<div id="plot"></div>
+</section>
+<section class="section">
+<h2>Further Discussion</h2>
+<p>This relationship can also be extended to elliptical orbits. Kepler's Third Law still holds, but the semi-major axis (\(a\)) of the ellipse is used in place of the radius \(r\), yielding \(T^2 \propto a^3\). The law applies to other celestial bodies and allows scientists to calculate orbital properties for a wide range of systems.</p>
+</section>
 </div>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script async="" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+    // Simulating the graph for T^2 vs r^3 using JavaScript for web visualization
+    let G = 6.67430e-11;  // Gravitational constant in m^3 kg^-1 s^-2
+    let M = 5.972e24;     // Mass of Earth in kg
+
+    // Function to calculate orbital period
+    function orbitalPeriod(r) {
+      return 2 * Math.PI * Math.sqrt(Math.pow(r, 3) / (G * M));
+    }
+
+    // Radii (in meters)
+    let radii = [];
+    let periods = [];
+    for (let i = 1e6; i <= 1e8; i += 1e5) {
+      radii.push(i);
+      periods.push(orbitalPeriod(i));
+    }
+
+    // Calculate T^2 and r^3
+    let T_squared = periods.map(p => p ** 2);
+    let r_cubed = radii.map(r => r ** 3);
+
+    // Plotting T^2 vs r^3 using Plotly
+    let trace = {
+      x: r_cubed,
+      y: T_squared,
+      mode: 'lines',
+      type: 'scatter',
+      name: "T^2 vs r^3"
+    };
+
+    let layout = {
+      title: "Kepler's Third Law: T^2 vs r^3",
+      xaxis: { title: "r^3 (m^3)" },
+      yaxis: { title: "T^2 (s^2)" },
+      showlegend: true
+    };
+
+    Plotly.newPlot('plot', [trace], layout);
+  </script>
 </body>
 </html>
 </div>
