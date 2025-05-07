@@ -39,15 +39,16 @@
 
     /* New CSS to style formulas like in the image */
     .formula {
-      font-size: 1.5em;
+      font-size: 1.6em;
       font-family: 'Times New Roman', Times, serif;
       font-weight: bold;
       text-align: center;
       margin: 20px 0;
+      color: #e74c3c;
     }
 
     .formula code {
-      font-size: 1.2em;
+      font-size: 1.3em;
       color: #e74c3c;
     }
   </style>
