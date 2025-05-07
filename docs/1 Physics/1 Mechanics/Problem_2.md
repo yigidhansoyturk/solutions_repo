@@ -4,35 +4,38 @@
   <meta charset="UTF-8" />
   <title>Forced Damped Pendulum Simulation</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 40px auto;
-      max-width: 900px;
-      padding: 0 20px;
+      max-width: 960px;
+      margin: 20px auto;
+      padding: 20px;
       background-color: #fefefe;
-      color: #333;
       line-height: 1.6;
+      color: #333;
     }
     h1, h2 {
       color: #2c3e50;
     }
     input[type="range"], input[type="number"] {
-      width: 200px;
-      margin: 5px 0;
+      width: 150px;
+      margin-right: 10px;
     }
     label {
       font-weight: bold;
-      display: block;
-      margin-top: 10px;
-    }
-    #plot {
-      margin-top: 30px;
+      margin-right: 5px;
     }
     pre {
       background: #f4f4f4;
       padding: 10px;
       overflow-x: auto;
+    }
+    #plot {
+      margin-top: 30px;
     }
   </style>
 </head>
@@ -40,67 +43,88 @@
 
   <h1>🌀 Forced Damped Pendulum Simulation</h1>
 
-  <section>
-    <h2>📘 Theoretical Foundation</h2>
-    <p>The motion is governed by the nonlinear second-order differential equation:</p>
-    <pre>
-d²θ/dt² + b·dθ/dt + (g/L)·sin(θ) = A·cos(ωt)
-    </pre>
-    <p>Where:</p>
-    <ul>
-      <li><strong>θ(t)</strong> is the angular displacement</li>
-      <li><strong>b</strong> is the damping coefficient</li>
-      <li><strong>g</strong> is gravitational acceleration</li>
-      <li><strong>L</strong> is pendulum length</li>
-      <li><strong>A</strong> is the forcing amplitude</li>
-      <li><strong>ω</strong> is the forcing frequency</li>
-    </ul>
-  </section>
+  <h2>📘 Theoretical Model</h2>
+  <p>The motion is governed by the nonlinear second-order differential equation:</p>
+  <p>
+    $$
+    \frac{d^2\theta}{dt^2} + b\frac{d\theta}{dt} + \frac{g}{L}\sin(\theta) = A\cos(\omega t)
+    $$
+  </p>
+  <p>This equation models a pendulum subject to gravity, damping, and an external periodic force.</p>
 
-  <section>
-    <h2>🎛️ Simulation Controls</h2>
-    <label>Damping Coefficient (b): <input type="number" id="b" value="0.5" step="0.1"></label>
-    <label>Amplitude (A): <input type="number" id="A" value="1.2" step="0.1"></label>
-    <label>Frequency (ω): <input type="number" id="omega" value="2/3" step="0.01"></label>
-    <label>Pendulum Length (L): <input type="number" id="L" value="9.8" step="0.1"></label>
-    <button onclick="simulate()">Run Simulation</button>
-  </section>
+  <h2>⚙️ Simulation Controls</h2>
+  <div>
+    <label>Damping (b):</label>
+    <input type="number" id="b" value="0.5" step="0.1" oninput="simulate()" /><br><br>
 
-  <section id="plot"></section>
+    <label>Amplitude (A):</label>
+    <input type="number" id="A" value="1.2" step="0.1" oninput="simulate()" /><br><br>
+
+    <label>Frequency (ω):</label>
+    <input type="number" id="omega" value="2.0" step="0.1" oninput="simulate()" /><br><br>
+
+    <label>Length (L):</label>
+    <input type="number" id="L" value="1.0" step="0.1" oninput="simulate()" /><br><br>
+  </div>
+
+  <div id="plot"></div>
+
+  <h2>🧪 Method: Euler Integration</h2>
+  <p>
+    We approximate the motion using the Euler method by discretizing time and updating both angle \( \theta \) and angular velocity \( \omega \) step-by-step:
+  </p>
+  <pre><code>
+theta' = omega
+omega' = -b * omega - (g/L) * sin(theta) + A * cos(w * t)
+
+theta += dt * omega
+omega += dt * omega'
+  </code></pre>
 
   <script>
     function simulate() {
-      const b = parseFloat(document.getElementById('b').value);
-      const A = parseFloat(document.getElementById('A').value);
-      const omega = parseFloat(document.getElementById('omega').value);
-      const L = parseFloat(document.getElementById('L').value);
-      const g = 9.8;
+      const b = parseFloat(document.getElementById("b").value);
+      const A = parseFloat(document.getElementById("A").value);
+      const omega_force = parseFloat(document.getElementById("omega").value);
+      const L = parseFloat(document.getElementById("L").value);
+      const g = 9.81;
 
-      let theta = 0.2;  // initial angle
-      let omega_theta = 0; // initial angular velocity
-      const dt = 0.04;
-      const time = [], angles = [];
+      const dt = 0.02;
+      const T = 20; // total simulation time
+      const steps = Math.floor(T / dt);
 
-      for (let t = 0; t < 100; t += dt) {
-        const domega_dt = -b * omega_theta - (g / L) * Math.sin(theta) + A * Math.cos(omega * t);
-        omega_theta += domega_dt * dt;
-        theta += omega_theta * dt;
+      let theta = 0.2; // initial angle
+      let omega = 0;   // initial angular velocity
+      let t = 0;
 
+      const time = [];
+      const angle = [];
+
+      for (let i = 0; i < steps; i++) {
+        // Save current values
         time.push(t);
-        angles.push(theta);
+        angle.push(theta);
+
+        // Calculate derivatives
+        let domega = -b * omega - (g / L) * Math.sin(theta) + A * Math.cos(omega_force * t);
+
+        // Euler update
+        theta += dt * omega;
+        omega += dt * domega;
+        t += dt;
       }
 
       const trace = {
         x: time,
-        y: angles,
+        y: angle,
         type: 'scatter',
         mode: 'lines',
-        line: { color: 'darkred' },
+        line: { color: 'tomato', width: 2 },
         name: 'θ(t)'
       };
 
       const layout = {
-        title: 'Forced Damped Pendulum Motion',
+        title: 'Pendulum Angle θ(t) Over Time',
         xaxis: { title: 'Time (s)' },
         yaxis: { title: 'Angle θ (rad)' }
       };
