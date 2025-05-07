@@ -42,6 +42,7 @@
 
 <h2>📘 Theoretical Foundation</h2>
 <p>The equation governing a forced damped pendulum is:</p>
+
 <p id="equation"></p>
 
 <script>
@@ -56,7 +57,7 @@
   <li><strong>\\( A \\)</strong>: driving amplitude</li>
   <li><strong>\\( \\omega \\)</strong>: driving frequency</li>
 </ul>
-<p>This second-order nonlinear differential equation exhibits behaviors ranging from periodic motion to chaos.</p>
+<p>This second-order nonlinear differential equation describes the pendulum's motion under the influence of damping and external driving forces.</p>
 
 <h2>🧪 Simulation Controls</h2>
 <div class="control-group">
