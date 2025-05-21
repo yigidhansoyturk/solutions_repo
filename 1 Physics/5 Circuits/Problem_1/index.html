@@ -122,147 +122,124 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<title>📐 Equivalent Resistance Using Graph Theory</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Equivalent Resistance Using Graph Theory</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.js"></script>
 <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #f7f9fa;
-      min-height: 100vh;
+      margin: 20px;
+      background-color: #f9f9f9;
+      color: #222;
     }
-    .container {
-      max-width: 960px;
-      background: white;
-      padding: 40px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    section {
+      background: #fff;
+      padding: 20px;
+      margin: 20px 0;
       border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    h1, h2, h3 {
-      color: #2c3e50;
-    }
-    #result {
-      font-weight: bold;
-      color: #1e8449;
-    }
-    button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background: #3498db;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #circuitGraph {
-      margin-top: 30px;
-    }
+    h1, h2 { color: #003366; }
+    pre { background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    .code-highlight { color: darkred; font-weight: bold; }
   </style>
 </head>
 <body>
-<div class="container">
-<h1>📐 Equivalent Resistance Using Graph Theory</h1>
-<h2>🧠 Motivation</h2>
+<h1>Equivalent Resistance Using Graph Theory</h1>
+<section>
+<h2>Understanding the Concept</h2>
 <p>
-      Calculating equivalent resistance is crucial in understanding how electrical circuits behave. Traditional methods using only series and parallel resistor rules can become challenging with complex networks. Graph theory offers a structured, algorithmic approach.
+      In complex electrical circuits, calculating the equivalent resistance using traditional methods can be challenging due to nested series and parallel components. Graph theory provides a systematic approach by treating the circuit as a graph: nodes represent junctions and edges represent resistors with weights equivalent to their resistance values.
     </p>
 <p>
-      In graph theory, we treat each junction as a node and each resistor as an edge with a weight (resistance). By merging resistors using logical rules based on connectivity, we simplify the network into a single equivalent resistance efficiently.
+      By applying graph reduction techniques—such as identifying nodes of degree two for series simplification and detecting cycles for parallel combinations—we can automate and streamline the process. This enables accurate modeling of intricate circuits used in power distribution, PCB design, and microelectronic layout analysis.
     </p>
-<h2>🛠️ How It Works</h2>
-<ol>
-<li>Draw the circuit as a graph using nodes and resistors (edges with weights).</li>
-<li>Combine resistors in series—when there's a single path between two junctions.</li>
-<li>Combine resistors in parallel—when multiple resistors connect the same two junctions.</li>
-<li>Repeat the simplification process until one edge remains representing total resistance.</li>
-</ol>
-<h2>🧪 Try It Out (Simple Series &amp; Parallel Example)</h2>
-<p>This example shows a basic circuit with three resistors:</p>
-<ul>
-<li><strong>Resistor 1:</strong> Node A → B (100 Ω)</li>
-<li><strong>Resistor 2:</strong> Node B → C (200 Ω)</li>
-<li><strong>Resistor 3:</strong> Node A → C (300 Ω, in parallel with the A→B→C path)</li>
-</ul>
-<p>We will compute the total resistance from Node A to Node C using both paths (series and parallel).</p>
-<div id="circuitGraph"></div>
-<button onclick="calculateResistance()">💡 Compute Equivalent Resistance</button>
-<p id="result"></p>
-<h3>📊 Efficiency &amp; Improvements</h3>
-<ul>
-<li>Optimized for acyclic graphs and can handle simple cycles.</li>
-<li>Further optimized using union-find, DFS, or matrix-based solvers.</li>
-<li>Adaptable to large-scale simulations using network analysis libraries.</li>
-</ul>
-<h2>📚 Examples &amp; Tests</h2>
-<ul>
-<li>🔸 Series: A-B (100Ω), B-C (200Ω) → <strong>R_eq = 300Ω</strong></li>
-<li>🔸 Parallel: A-C (300Ω) in parallel with A-B-C path (100Ω + 200Ω) → <strong>R_eq = 150Ω</strong></li>
-</ul>
-</div>
+</section>
+<section>
+<h2>Advanced Algorithm Overview</h2>
+<pre><code>function simplify_circuit(graph, start, end):
+    while changes_detected:
+        for each node in graph:
+            if node.degree == 2 and not endpoint:
+                merge_series(node)
+        for each set of parallel edges:
+            merge_parallel(set)
+        detect_supernodes_and_contract()
+    return compute_resistance(start, end)</code></pre>
+<p>
+      This version improves scalability by introducing supernode detection and graph contraction, which collapse reducible clusters and simplify evaluation across complex topologies.
+    </p>
+</section>
+<section>
+<h2>Python Implementation with networkx</h2>
+<pre><code>import networkx as nx
+
+def simplify(G, start, end):
+    def is_series(node):
+        return G.degree[node] == 2 and node not in [start, end]
+
+    changed = True
+    while changed:
+        changed = False
+        for node in list(G.nodes):
+            if is_series(node):
+                u, v = list(G.neighbors(node))
+                R = G[u][node]['resistance'] + G[v][node]['resistance']
+                G.remove_node(node)
+                G.add_edge(u, v, resistance=R)
+                changed = True
+        for u, v in list(G.edges):
+            parallels = list(G.get_edge_data(u, v).values())
+            if len(parallels) &gt; 1:
+                total = 1 / sum(1 / e['resistance'] for e in parallels)
+                G.remove_edges_from([(u, v)] * len(parallels))
+                G.add_edge(u, v, resistance=total)
+    return G[start][end]['resistance']
+
+G = nx.MultiGraph()
+G.add_edge('A', 'X', resistance=2)
+G.add_edge('X', 'B', resistance=3)
+G.add_edge('A', 'B', resistance=6)  # parallel path
+R_eq = simplify(G, 'A', 'B')
+print("Equivalent Resistance:", R_eq)</code></pre>
+</section>
+<section>
+<h2>Visualizing Complex Combinations</h2>
+<div id="plot" style="height:400px;"></div>
 <script>
-    function calculateResistance() {
-      const R1 = 100;
-      const R2 = 200;
-      const R3 = 300;
-      const seriesPath = R1 + R2;
-      const parallel = 1 / (1 / R3 + 1 / seriesPath);
-      document.getElementById("result").innerText = `Total Equivalent Resistance: ${parallel.toFixed(2)} Ω`;
-    }
-
-    const nodes = [
-      { id: 'A', x: 0, y: 1 },
-      { id: 'B', x: 1, y: 1 },
-      { id: 'C', x: 2, y: 0.5 },
-    ];
-
-    const edges = [
-      { from: 'A', to: 'B', value: 100 },
-      { from: 'B', to: 'C', value: 200 },
-      { from: 'A', to: 'C', value: 300 },
-    ];
-
-    const edgeTraces = edges.map(edge => {
-      const fromNode = nodes.find(n => n.id === edge.from);
-      const toNode = nodes.find(n => n.id === edge.to);
-      return {
-        type: 'scatter',
-        x: [fromNode.x, toNode.x],
-        y: [fromNode.y, toNode.y],
-        mode: 'lines+text',
-        line: { width: 2 },
-        text: [`${edge.value}Ω`],
-        textposition: 'top center',
-        hoverinfo: 'none',
-        showlegend: false
+      const layout = {
+        title: 'Resistor Network Visualization',
+        xaxis: { title: 'Position' },
+        yaxis: { title: 'Potential Level' }
       };
-    });
-
-    const nodeTrace = {
-      type: 'scatter',
-      mode: 'markers+text',
-      x: nodes.map(n => n.x),
-      y: nodes.map(n => n.y),
-      marker: { size: 16, color: '#2980b9' },
-      text: nodes.map(n => n.id),
-      textposition: 'bottom center',
-      hoverinfo: 'text'
-    };
-
-    const layout = {
-      title: 'Resistor Network Visualization',
-      margin: { t: 50 },
-      xaxis: { visible: false },
-      yaxis: { visible: false },
-      height: 400
-    };
-
-    Plotly.newPlot('circuitGraph', [...edgeTraces, nodeTrace], layout);
-  </script>
+      const trace = {
+        x: [0, 1, 2, 1],
+        y: [0, 1, 0, -1],
+        text: ['A', 'X', 'B', 'C'],
+        mode: 'lines+text',
+        type: 'scatter',
+        line: { shape: 'spline' },
+        textposition: 'top center'
+      };
+      Plotly.newPlot('plot', [trace], layout);
+    </script>
+</section>
+<section>
+<h2>Performance and Extensions</h2>
+<p>
+      For dense or irregular circuits, incorporating adjacency matrices or Laplacian matrices enables resistance computation via linear algebra. The effective resistance \( R_{eff} = (e_i - e_j)^T L^+ (e_i - e_j) \), where \( L^+ \) is the pseudoinverse of the Laplacian, is particularly useful in high-performance applications.
+    </p>
+<p>
+      Future work could include:
+      <ul>
+<li>GUI for drag-and-drop resistor networks</li>
+<li>Symbolic algebra support using <code>sympy</code></li>
+<li>Integration into electronic circuit simulators</li>
+</ul>
+</p>
+</section>
 </body>
 </html>
 </div>
