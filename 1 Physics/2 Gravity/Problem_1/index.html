@@ -259,52 +259,13 @@ plt.show()</code></pre>
     </script>
 </section>
 <section>
-<h2>3D Orbital Animation</h2>
-<div id="orbit3D"></div>
-<script>
-  window.onload = function () {
-    const scene = new THREE.Scene();
-    const container = document.getElementById('orbit3D');
-    const width = container.offsetWidth;
-    const height = 400;
-
-    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    camera.position.set(0, 2, 6);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(width, height);
-    container.appendChild(renderer.domElement);
-
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.enableZoom = true;
-
-    const star = new THREE.Mesh(
-      new THREE.SphereGeometry(0.2, 32, 32),
-      new THREE.MeshBasicMaterial({ color: 0xffff00 })
-    );
-    scene.add(star);
-
-    const radius = 2;
-    const planet = new THREE.Mesh(
-      new THREE.SphereGeometry(0.05, 32, 32),
-      new THREE.MeshBasicMaterial({ color: 0x00aaff })
-    );
-    scene.add(planet);
-
-    let angle = 0;
-    function animate() {
-      requestAnimationFrame(animate);
-      angle += 0.01;
-      planet.position.x = radius * Math.cos(angle);
-      planet.position.z = radius * Math.sin(angle);
-      controls.update();
-      renderer.render(scene, camera);
-    }
-    animate();
-  }
-    </script>
+<h2>Orbital Concepts Illustration</h2>
+<p>While 3D animation can be insightful, here we illustrate orbital concepts through simpler and more stable methods:</p>
+<ul>
+<li><strong>Proportionality of \( T^2 \) and \( r^3 \):</strong> Verified through mathematical derivation and simulation.</li>
+<li><strong>Circular vs. Elliptical Orbits:</strong> Circular orbits simplify calculations, but Kepler's law holds for elliptical orbits using the semi-major axis.</li>
+<li><strong>Real-World Relevance:</strong> Used in space mission planning, satellite launches, and estimating planetary masses.</li>
+</ul>
 </section>
 <section>
 <h2>Discussion</h2>
