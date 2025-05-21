@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kepler's Third Law: Orbital Mechanics</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/controls/OrbitControls.js"></script>
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
@@ -54,6 +56,11 @@
       background-color: #66ccff;
       color: #000;
     }
+    #orbit3D {
+      width: 100%;
+      height: 400px;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -62,7 +69,8 @@
 
   <section>
     <h2>Overview</h2>
-    <p>Kepler's Third Law states that the square of the orbital period \( T^2 \) is proportional to the cube of the orbital radius \( r^3 \). This fundamental principle connects Newtonian gravity with planetary motion and is pivotal for calculating satellite trajectories and understanding celestial mechanics.</p>
+    <p>Kepler's Third Law is one of the foundational principles of celestial mechanics. It states that the square of the orbital period \( T^2 \) is proportional to the cube of the orbital radius \( r^3 \). This elegant relationship reveals the connection between time and space in orbital systems and allows astronomers to calculate planetary motions, design satellite orbits, and explore gravitational dynamics. 
+    It provides the framework for understanding how bodies move under the influence of gravity, from moons orbiting planets to entire planetary systems orbiting stars. Whether predicting the phases of moons, launching satellites, or estimating distances across the solar system, Kepler’s Third Law remains a cornerstone of astrophysics and space navigation.</p>
   </section>
 
   <section>
@@ -72,6 +80,43 @@
     <p>Equating the forces and substituting for \( v = \frac{2 \pi r}{T} \):</p>
     <p>\[ T^2 = \frac{4 \pi^2 r^3}{G M} \]</p>
     <p>This shows \( T^2 \propto r^3 \).</p>
+  </section>
+
+  <section>
+    <h2>3D Orbital Animation</h2>
+    <div id="orbit3D"></div>
+    <script>
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 600, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth * 0.9, 400);
+      document.getElementById('orbit3D').appendChild(renderer.domElement);
+
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+      const starGeometry = new THREE.SphereGeometry(0.2, 32, 32);
+      const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+      const star = new THREE.Mesh(starGeometry, starMaterial);
+      scene.add(star);
+
+      const planetGeometry = new THREE.SphereGeometry(0.05, 32, 32);
+      const planetMaterial = new THREE.MeshBasicMaterial({ color: 0x00aaff });
+      const planet = new THREE.Mesh(planetGeometry, planetMaterial);
+      scene.add(planet);
+
+      const orbitRadius = 2;
+      let angle = 0;
+      camera.position.z = 5;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        angle += 0.01;
+        planet.position.x = orbitRadius * Math.cos(angle);
+        planet.position.z = orbitRadius * Math.sin(angle);
+        renderer.render(scene, camera);
+      }
+      animate();
+    </script>
   </section>
 
   <section>
