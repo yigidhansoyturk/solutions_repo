@@ -125,37 +125,67 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Understanding Kepler's Third Law</title>
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Roboto', sans-serif;
       line-height: 1.6;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f4;
+      background: linear-gradient(to right, #e0f7fa, #f3e5f5);
       color: #333;
     }
-    header, section, footer {
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
+
     header {
-      background-color: #283593;
+      background: linear-gradient(to right, #1a237e, #3949ab);
       color: white;
       text-align: center;
+      padding: 40px 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
-    h1, h2 {
-      color: #283593;
+
+    header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
     }
+
+    header p {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+
+    section {
+      background: white;
+      margin: 30px auto;
+      padding: 30px;
+      max-width: 900px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #512da8;
+      margin-top: 0;
+    }
+
+    p {
+      font-size: 1.1em;
+    }
+
     canvas {
       display: block;
-      margin: 20px auto;
-      background: #fff;
-      border: 1px solid #ccc;
+      margin: 30px auto;
+      background: #fefefe;
+      border: 2px dashed #b39ddb;
+      border-radius: 8px;
     }
+
     footer {
       text-align: center;
+      padding: 20px;
+      background-color: #ede7f6;
       font-size: 0.9em;
-      color: #666;
+      color: #555;
     }
   </style>
 </head>
@@ -193,18 +223,20 @@
         ctx.fill();
 
         const orbits = [
-          { radius: 60, color: "red", label: "Planet A" },
-          { radius: 120, color: "green", label: "Planet B" },
-          { radius: 180, color: "blue", label: "Planet C" }
+          { radius: 60, color: "#ef5350", label: "Planet A" },
+          { radius: 120, color: "#66bb6a", label: "Planet B" },
+          { radius: 180, color: "#42a5f5", label: "Planet C" }
         ];
 
         orbits.forEach((orbit, i) => {
           ctx.beginPath();
           ctx.arc(centerX, centerY, orbit.radius, 0, 2 * Math.PI);
           ctx.strokeStyle = orbit.color;
+          ctx.lineWidth = 2;
+          ctx.setLineDash([5, 5]);
           ctx.stroke();
+          ctx.setLineDash([]);
 
-          // Draw planets
           const angle = Math.PI / 4;
           const x = centerX + orbit.radius * Math.cos(angle);
           const y = centerY + orbit.radius * Math.sin(angle);
@@ -214,7 +246,8 @@
           ctx.fillStyle = orbit.color;
           ctx.fill();
 
-          ctx.fillStyle = "black";
+          ctx.font = "14px Roboto";
+          ctx.fillStyle = "#333";
           ctx.fillText(orbit.label, x + 10, y);
         });
       }
@@ -262,6 +295,9 @@
       verifyKeplerLaw();
     </script>
 </section>
+<footer>
+<p>© 2025 Kepler's Third Law Educational Site</p>
+</footer>
 </body>
 </html>
 </div>
