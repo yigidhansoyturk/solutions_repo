@@ -252,6 +252,8 @@ window.onload = function() {
         }
       }
     </script>
+<button onclick="exportNetworkImage()">Export as PNG</button>
+<button onclick="exportNetworkJSON()">Export as JSON</button>
 </section>
 <section>
 <h2>Graph-Based Circuit Simplification Illustration</h2>
@@ -326,15 +328,39 @@ def simplify(G, start, end):
 <p>
       where \( L^+ \) is the Moore–Penrose pseudoinverse of the Laplacian. This approach is robust in high-performance computing contexts.
     </p>
-<p>
-      Future capabilities could include:
-      <ul>
-<li>Dynamic drag-and-drop circuit editor with export</li>
-<li>Interactive resistance solver integrated with symbolic libraries</li>
-<li>Real-time simulation overlay for current/voltage animation</li>
+<p>This application already includes several advanced features to support deeper analysis and interactivity:</p>
+<ul>
+<li><strong>Dynamic drag-and-drop editor:</strong> Easily reposition nodes and restructure the circuit visually using the interactive canvas.</li>
+<li><strong>Custom node selection:</strong> Compute the equivalent resistance between any pair of nodes using the dropdowns.</li>
+<li><strong>Visual resistance graph:</strong> View real-time circuit configurations with labeled resistances and adjust them on the fly.</li>
 </ul>
-</p>
+<p>Upcoming additions will enhance export capabilities, support symbolic resistance simplification, and enable animated current/voltage simulations in real-time.</p>
 </section>
+<script>
+function exportNetworkImage() {
+  html2canvas(document.getElementById('network')).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'circuit-network.png';
+    link.href = canvas.toDataURL();
+    link.click();
+  });
+}
+
+function exportNetworkJSON() {
+  const exportData = {
+    nodes: nodes.get(),
+    edges: edges.get()
+  };
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+  const link = document.createElement('a');
+  link.setAttribute("href", dataStr);
+  link.setAttribute("download", "circuit-network.json");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
 </div>
