@@ -47,7 +47,6 @@
       background-color: #00509e;
     }
 
-    /* Dark Mode */
     .dark-mode {
       background: #121212;
       color: #eee;
@@ -118,6 +117,8 @@
   </section>
 
   <script>
+    let pendulumChartInstance = null;
+
     function toggleDarkMode() {
       document.body.classList.toggle("dark-mode");
     }
@@ -152,7 +153,11 @@ Period T: ${T.toFixed(3)} s
 Estimated g: ${g.toFixed(3)} m/s²
 Uncertainty Δg: ±${deltaG.toFixed(3)} m/s²`;
 
-      new Chart(document.getElementById('pendulumChart'), {
+      if (pendulumChartInstance) {
+        pendulumChartInstance.destroy();
+      }
+
+      pendulumChartInstance = new Chart(document.getElementById('pendulumChart'), {
         type: 'bar',
         data: {
           labels: values.map((_, i) => `Trial ${i + 1}`),
