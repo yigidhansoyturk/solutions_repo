@@ -12,6 +12,7 @@
       background: #f4f4f4;
       padding: 20px;
       color: #222;
+      transition: all 0.3s ease;
     }
     section {
       background: white;
@@ -19,6 +20,7 @@
       border-radius: 8px;
       margin-bottom: 40px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      transition: background 0.3s ease, color 0.3s ease;
     }
     h1, h2 {
       color: #003366;
@@ -37,9 +39,34 @@
       margin-top: 10px;
       margin-right: 10px;
     }
+
+    /* DARK MODE STYLES */
+    .dark-mode {
+      background: #121212;
+      color: #eee;
+    }
+    .dark-mode section {
+      background: #1e1e1e;
+      box-shadow: none;
+    }
+    .dark-mode input,
+    .dark-mode textarea {
+      background: #333;
+      color: #fff;
+      border: 1px solid #666;
+    }
+    .dark-mode canvas {
+      background: #fff;
+    }
+    .dark-mode button {
+      background-color: #444;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
+
+  <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
 
   <h1>Measuring Earth's Gravitational Acceleration with a Pendulum</h1>
 
@@ -74,6 +101,10 @@
   </section>
 
   <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+
     function analyzePendulum() {
       const L = parseFloat(document.getElementById('L').value);
       const ruler = parseFloat(document.getElementById('ruler').value);
