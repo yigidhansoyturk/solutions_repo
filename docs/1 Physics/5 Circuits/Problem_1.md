@@ -85,7 +85,26 @@
 
     const container = document.getElementById('network');
     const network = new vis.Network(container, { nodes, edges }, {
-      manipulation: { enabled: true },
+      manipulation: {
+        enabled: true,
+        addNode: function (data, callback) {
+          const nodeId = prompt('Enter node ID:');
+          if (nodeId) {
+            data.id = nodeId;
+            data.label = nodeId;
+            callback(data);
+            populateSelectors();
+          }
+        },
+        editNode: function (data, callback) {
+          const newLabel = prompt('Edit node label:', data.label);
+          if (newLabel !== null) {
+            data.label = newLabel;
+            callback(data);
+            populateSelectors();
+          }
+        }
+      },
       physics: false,
       edges: { font: { align: 'middle' } },
       nodes: { shape: 'dot', size: 20, font: { size: 16, color: '#003366' }, borderWidth: 2 }
