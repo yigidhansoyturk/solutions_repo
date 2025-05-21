@@ -205,7 +205,7 @@
 <p id="resistanceResult" style="margin-top: 10px; font-weight: bold;"></p>
 </div>
 <script>
-      function computeResistanceDynamic() {
+function computeResistanceDynamic() {
   const start = document.getElementById('nodeStart').value;
   const end = document.getElementById('nodeEnd').value;
   const edgeList = edges.get();
@@ -230,8 +230,18 @@
   }
 }
 
-// Populate node selectors
-window.onload = function() {
+// Populate node selectors after DOM and vis network setup
+setTimeout(() => {
+  const nodeList = nodes.get();
+  const startSelect = document.getElementById('nodeStart');
+  const endSelect = document.getElementById('nodeEnd');
+  nodeList.forEach(node => {
+    const opt1 = new Option(node.label, node.id);
+    const opt2 = new Option(node.label, node.id);
+    startSelect.add(opt1);
+    endSelect.add(opt2);
+  });
+}, 500);
   const nodeList = nodes.get();
   const startSelect = document.getElementById('nodeStart');
   const endSelect = document.getElementById('nodeEnd');
