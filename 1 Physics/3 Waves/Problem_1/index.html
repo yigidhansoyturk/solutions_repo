@@ -124,6 +124,8 @@
 <meta charset="utf-8"/>
 <title>🌊 Wave Interference Simulation</title>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style>
     body {
       font-family: Arial, sans-serif;
@@ -167,19 +169,43 @@
 </head>
 <body>
 <h1>🌊 Interference Patterns from Multiple Wave Sources</h1>
-<h2>📖 What’s Going On Here?</h2>
+<h2>🔍 Overview</h2>
 <p>
-    Multiple circular wave sources on a flat surface create fascinating interference patterns. When these waves overlap,
-    they interact based on the <strong>superposition principle</strong> — adding their amplitudes at every point in space.
+    Wave interference is a fundamental phenomenon that arises when two or more waves overlap in space.
+    Their amplitudes combine according to the <strong>superposition principle</strong>, producing complex patterns of crests and troughs.
+    This behavior is seen across physics: in water ripples, sound fields, light fringes, and quantum wavefunctions.
   </p>
-<pre><code>η(x, y, t) = (A / √r) * cos(k * r - ω * t)</code></pre>
 <p>
-    This formula means waves decrease in amplitude as they travel (1/√r), oscillate with distance and time,
-    and interact with each other. You'll see areas of:
+    In this simulation, we visualize circular waves emitted by multiple sources positioned around a ring.
+    The waves interact at every point in space, with the net wave height at each location determined by the sum:
   </p>
+<p>
+    \[
+    \eta(x, y, t) = \frac{A}{\sqrt{r}} \cos(k r - \omega t)
+    \]
+  </p>
+<p>
+    Where:
+    <ul>
+<li><strong>A</strong>: amplitude of each source</li>
+<li><strong>r</strong>: distance from the wave source to the point \((x, y)\)</li>
+<li><strong>k</strong>: wave number, \( k = \frac{2\pi}{\lambda} \)</li>
+<li><strong>\omega</strong>: angular frequency, \( \omega = 2\pi f \)</li>
+</ul>
+</p>
+<p>
+    The interference can be:
+    <ul>
+<li><strong>Constructive</strong>: waves amplify when in phase</li>
+<li><strong>Destructive</strong>: waves cancel when out of phase</li>
+</ul>
+</p>
+<h3>🌍 Real-World Applications</h3>
 <ul>
-<li><strong>Constructive interference</strong> (bright spots)</li>
-<li><strong>Destructive interference</strong> (dark spots)</li>
+<li>Water wave studies and tank experiments</li>
+<li>Acoustic speaker design and noise cancellation</li>
+<li>Optics: Young's double-slit, holography, and diffraction</li>
+<li>Quantum probability amplitudes and tunneling</li>
 </ul>
 <h2>🛠️ Controls</h2>
 <label for="numSources">Number of Sources:</label>
