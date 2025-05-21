@@ -123,91 +123,103 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Kepler's Third Law - Circular Orbits</title>
+<title>Kepler's Third Law</title>
 <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #78B22F;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            padding: 30px;
-            margin: 0 auto;
-            max-width: 1200px;
-        }
-        h2 {
-            color: #333;
-        }
-        p {
-            font-size: 18px;
-            color: #555;
-            line-height: 1.6;
-        }
-        .graph {
-            text-align: center;
-            margin-top: 40px;
-        }
-        .graph img {
-            max-width: 80%;
-            border: 2px solid #333;
-            border-radius: 10px;
-        }
-        .section {
-            margin-bottom: 40px;
-        }
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #78B22F;
-            color: white;
-            margin-top: 40px;
-        }
-    </style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    header, section, footer {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    header {
+      background-color: #283593;
+      color: white;
+      text-align: center;
+    }
+    h1, h2 {
+      color: #283593;
+    }
+    canvas {
+      display: block;
+      margin: 20px auto;
+      background: #fff;
+      border: 1px solid #ccc;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
 </head>
 <body>
 <header>
-<h1>Kepler's Third Law and Circular Orbits</h1>
+<h1>Kepler's Third Law</h1>
+<p>Exploring the relationship between orbital period and radius</p>
 </header>
-<div class="container">
-<!-- Introduction Section -->
-<section class="section">
-<h2>What is Kepler's Third Law?</h2>
-<p>Kepler's Third Law describes the relationship between the orbital period and the orbital radius of celestial bodies like planets and satellites. It states that the square of the orbital period (T) is proportional to the cube of the orbital radius (r), specifically: 
-        <strong>T<sup>2</sup> ∝ r<sup>3</sup>.</strong> This means that the farther a planet is from the sun, the longer it takes to complete an orbit.</p>
+<section>
+<h2>1. Detailed Explanation</h2>
+<p>Kepler's Third Law states that the square of the orbital period (T) of a planet is directly proportional to the cube of the semi-major axis (r) of its orbit: <strong>T<sup>2</sup> ∝ r<sup>3</sup></strong>. For circular orbits, this becomes an exact relationship. It was derived from empirical observations by Johannes Kepler and later explained using Newton's Law of Gravitation.</p>
 </section>
-<!-- Derivation Section -->
-<section class="section">
-<h2>Understanding the Relationship</h2>
-<p>This law is crucial for understanding planetary motion and gravitational interactions. The relationship can be derived from Newton's Law of Universal Gravitation and centripetal force. In simpler terms, the force that keeps planets in orbit is the same force that makes them move in circular paths. The orbital period increases as the orbital radius increases, and this simple relationship helps scientists calculate the distances of planets from stars.</p>
+<section>
+<h2>2. Graphical Representations</h2>
+<canvas height="400" id="orbitCanvas" width="400"></canvas>
+<script>
+      const canvas = document.getElementById("orbitCanvas");
+      const ctx = canvas.getContext("2d");
+
+      function drawOrbit(radius, color) {
+        ctx.beginPath();
+        ctx.arc(200, 200, radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = color;
+        ctx.stroke();
+      }
+
+      drawOrbit(50, "red");
+      drawOrbit(100, "green");
+      drawOrbit(150, "blue");
+    </script>
 </section>
-<!-- Graphical Representation Section -->
-<section class="section">
-<h2>Graphical Representation of Kepler's Third Law</h2>
-<p>Below is a graphical representation showing how the square of the orbital period (T<sup>2</sup>) relates to the cube of the orbital radius (r<sup>3</sup>) for circular orbits.</p>
-<div class="graph">
-<img alt="Kepler's Third Law Graph" src="kepler_graph.png"/>
-</div>
+<section>
+<h2>3. Extension to Elliptical Orbits</h2>
+<p>For elliptical orbits, Kepler's Third Law still applies when using the semi-major axis as the orbital radius. This law is crucial for calculating orbits of planets, moons, and artificial satellites. It shows that even in elongated orbits, the relationship between period and radius remains consistent.</p>
 </section>
-<!-- Computational Model Section -->
-<section class="section">
-<h2>Real-World Examples: Orbital Periods</h2>
-<p>This relationship applies to many celestial bodies, including our Moon orbiting Earth and the planets in our Solar System. For example, the Earth takes approximately 365 days to orbit the Sun, while the Moon takes about 27.3 days to orbit Earth. This concept also allows scientists to calculate the mass of a planet by examining the orbits of satellites around it.</p>
+<section>
+<h2>Tasks</h2>
+<h3>Task 1: Derivation</h3>
+<p>By equating centripetal force and gravitational force, <em>mv<sup>2</sup>/r = GMm/r<sup>2</sup></em>, we derive <em>T<sup>2</sup> = (4π<sup>2</sup>/GM)r<sup>3</sup></em>.</p>
+<h3>Task 2: Implications</h3>
+<p>This law allows astronomers to determine masses of celestial bodies and distances between them, revolutionizing our understanding of the cosmos.</p>
+<h3>Task 3: Real-world Examples</h3>
+<p>The Moon orbits Earth in about 27.3 days at a distance of ~384,000 km. Using Kepler's law, we can derive Earth's mass. Similarly, we model planetary orbits in the Solar System.</p>
+<h3>Task 4: Computational Model</h3>
+<p>Check your browser's console for verification of Kepler's Law using simulated orbits.</p>
+<script>
+      function verifyKeplerLaw() {
+        const G = 6.67430e-11;
+        const M = 5.972e24;
+        const results = [];
+
+        for (let r = 1e7; r <= 5e7; r += 1e7) {
+          let T = 2 * Math.PI * Math.sqrt(r ** 3 / (G * M));
+          results.push({ r, T, T2: T ** 2, r3: r ** 3, T2_r3: (T ** 2) / (r ** 3) });
+        }
+
+        console.log("Kepler's Law Verification (T^2/r^3):", results);
+      }
+
+      verifyKeplerLaw();
+    </script>
 </section>
-<!-- Elliptical Orbits Section -->
-<section class="section">
-<h2>Elliptical Orbits and Kepler's Law</h2>
-<p>Kepler's Third Law also applies to elliptical orbits, where the semi-major axis replaces the orbital radius. While circular orbits are the simplest case, many celestial bodies follow elliptical paths, and the law still holds as long as we use the semi-major axis instead of the radius.</p>
-</section>
-</div>
 <footer>
-<p>Created as a part of learning Kepler's Laws and Orbital Mechanics</p>
+<p>© 2025 Kepler's Third Law Educational Site</p>
 </footer>
 </body>
 </html>
