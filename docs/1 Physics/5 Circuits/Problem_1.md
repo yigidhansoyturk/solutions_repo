@@ -79,21 +79,51 @@
       new vis.Network(container, data, options);
     </script>
     <div style="margin-top: 20px;">
-      <button onclick="computeResistance()">Compute Resistance from A to B</button>
+      <label for="nodeStart">Start Node:</label>
+<select id="nodeStart"></select>
+<label for="nodeEnd">End Node:</label>
+<select id="nodeEnd"></select>
+<button onclick="computeResistanceDynamic()">Compute Resistance</button>
       <p id="resistanceResult" style="margin-top: 10px; font-weight: bold;"></p>
     </div>
     <script>
-      function computeResistance() {
-        const edgeList = edges.get();
-        let total = 0;
-        let pathCount = 0;
-        for (const edge of edgeList) {
-          if ((edge.from === 'A' && edge.to === 'B') || (edge.from === 'B' && edge.to === 'A')) {
-            const value = parseFloat(edge.label);
-            if (!isNaN(value)) {
-              total += 1 / value;
-              pathCount++;
-            }
+      function computeResistanceDynamic() {
+  const start = document.getElementById('nodeStart').value;
+  const end = document.getElementById('nodeEnd').value;
+  const edgeList = edges.get();
+  let total = 0;
+  let pathCount = 0;
+  for (const edge of edgeList) {
+    const direct = (edge.from === start && edge.to === end) || (edge.from === end && edge.to === start);
+    if (direct) {
+      const value = parseFloat(edge.label);
+      if (!isNaN(value)) {
+        total += 1 / value;
+        pathCount++;
+      }
+    }
+  }
+  const resultElement = document.getElementById('resistanceResult');
+  if (pathCount > 0) {
+    const result = 1 / total;
+    resultElement.textContent = `Approx. Resistance (${start}-${end}): ${result.toFixed(2)} Ω`;
+  } else {
+    resultElement.textContent = `No direct or parallel connection between ${start} and ${end} found.`;
+  }
+}
+
+// Populate node selectors
+window.onload = function() {
+  const nodeList = nodes.get();
+  const startSelect = document.getElementById('nodeStart');
+  const endSelect = document.getElementById('nodeEnd');
+  nodeList.forEach(node => {
+    const opt1 = new Option(node.label, node.id);
+    const opt2 = new Option(node.label, node.id);
+    startSelect.add(opt1);
+    endSelect.add(opt2);
+  });
+};
           }
         }
         if (pathCount > 0) {
