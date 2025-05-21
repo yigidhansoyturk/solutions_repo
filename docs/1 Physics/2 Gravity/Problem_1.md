@@ -5,30 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kepler's Third Law: Orbital Mechanics</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; background: #f9f9f9; }
-    h1, h2 { color: #003366; }
-    section { background: #fff; padding: 20px; margin: 20px 0; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    code { background: #eee; padding: 2px 4px; border-radius: 4px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+      background: #f9f9f9;
+      color: #222;
+      transition: background 0.4s, color 0.4s;
+    }
+    .dark-mode {
+      background: #121212;
+      color: #f0f0f0;
+    }
+    h1, h2 {
+      color: #003366;
+    }
+    .dark-mode h1, .dark-mode h2 {
+      color: #66ccff;
+    }
+    section {
+      background: #fff;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      transition: background 0.4s, color 0.4s;
+    }
+    .dark-mode section {
+      background: #1e1e1e;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+    }
     canvas { margin-top: 20px; }
+    button {
+      margin-bottom: 20px;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #003366;
+      color: white;
+      transition: background 0.3s;
+    }
+    .dark-mode button {
+      background-color: #66ccff;
+      color: #000;
+    }
   </style>
 </head>
 <body>
+  <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
   <h1>Kepler's Third Law and Orbital Mechanics</h1>
 
   <section>
     <h2>Overview</h2>
-    <p>Kepler's Third Law states that the square of the orbital period <code>(T^2)</code> is proportional to the cube of the orbital radius <code>(r^3)</code>. This fundamental principle connects Newtonian gravity with planetary motion and is pivotal for calculating satellite trajectories and understanding celestial mechanics.</p>
+    <p>Kepler's Third Law states that the square of the orbital period \( T^2 \) is proportional to the cube of the orbital radius \( r^3 \). This fundamental principle connects Newtonian gravity with planetary motion and is pivotal for calculating satellite trajectories and understanding celestial mechanics.</p>
   </section>
 
   <section>
     <h2>Derivation</h2>
     <p>From Newton's laws:</p>
-    <pre><code>F = G * M * m / r^2
-F = m * v^2 / r</code></pre>
-    <p>Equating the forces and substituting for <code>v = 2 * pi * r / T</code>:</p>
-    <pre><code>T^2 = (4 * pi^2 * r^3) / (G * M)</code></pre>
-    <p>This shows <strong><code>T^2 ∝ r^3</code></strong>.</p>
+    <p>\[ F = \frac{G M m}{r^2} \quad \text{and} \quad F = \frac{m v^2}{r} \]</p>
+    <p>Equating the forces and substituting for \( v = \frac{2 \pi r}{T} \):</p>
+    <p>\[ T^2 = \frac{4 \pi^2 r^3}{G M} \]</p>
+    <p>This shows \( T^2 \propto r^3 \).</p>
   </section>
 
   <section>
@@ -75,6 +118,10 @@ plt.show()</code></pre>
         },
         options: {
           responsive: true,
+          animation: {
+            duration: 1500,
+            easing: 'easeOutBounce'
+          },
           scales: {
             x: {
               type: 'linear',
@@ -102,5 +149,11 @@ plt.show()</code></pre>
     <h2>Discussion</h2>
     <p>Kepler's Third Law not only simplifies the analysis of orbital systems but also lays the foundation for space travel and astrophysics. It can be extended to elliptical orbits by using the semi-major axis in place of radius.</p>
   </section>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+  </script>
 </body>
 </html>
