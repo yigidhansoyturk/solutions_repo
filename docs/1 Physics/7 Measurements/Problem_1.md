@@ -8,39 +8,46 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background: #f4f4f4;
       padding: 20px;
       color: #222;
       transition: all 0.3s ease;
     }
     section {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
       margin-bottom: 40px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      transition: background 0.3s ease, color 0.3s ease;
+      box-shadow: 0 0 15px rgba(0,0,0,0.05);
     }
-    h1, h2 {
+    h1, h2, h3 {
       color: #003366;
     }
     textarea {
       width: 100%;
       font-family: monospace;
-      height: 60px;
+      height: 70px;
     }
     label {
       display: inline-block;
-      width: 180px;
-      margin-bottom: 5px;
+      width: 220px;
+      margin-bottom: 8px;
     }
     button {
-      margin-top: 10px;
-      margin-right: 10px;
+      margin: 10px 10px 0 0;
+      padding: 8px 14px;
+      background-color: #003366;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #00509e;
     }
 
-    /* DARK MODE STYLES */
+    /* Dark Mode */
     .dark-mode {
       background: #121212;
       color: #eee;
@@ -66,18 +73,28 @@
 </head>
 <body>
 
-  <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
 
-  <h1>Measuring Earth's Gravitational Acceleration with a Pendulum</h1>
+  <h1>Measuring Gravity with a Simple Pendulum</h1>
 
   <section>
     <h2>Overview</h2>
     <p>
-      You can estimate Earth's gravitational acceleration \( g \) by timing the oscillations of a pendulum.
-      Using 10 measurements of the time for 10 full swings, we compute:
+      The acceleration due to gravity on Earth can be estimated using a simple pendulum — a mass hanging from a string of fixed length.
+      When displaced and released, the pendulum swings in a regular arc. The period of these oscillations is related to gravity through:
     </p>
     <p>\[
-      g = \frac{4 \pi^2 L}{T^2} \quad \text{and} \quad \Delta g = g \sqrt{ \left( \frac{\Delta L}{L} \right)^2 + \left( \frac{2 \Delta T}{T} \right)^2 }
+      g = \frac{4\pi^2 L}{T^2}
+    \]</p>
+    <p>
+      Here, \( L \) is the pendulum length, and \( T \) is the period of a single oscillation. Since timing a single swing can be error-prone,
+      a better method is to measure the time for 10 full oscillations (denoted \( T_{10} \)), average multiple trials, and compute \( T = \frac{T_{10}}{10} \).
+    </p>
+    <p>
+      By accounting for uncertainty in the length measurement and timing variability, we also estimate the error in \( g \):
+    </p>
+    <p>\[
+      \Delta g = g \cdot \sqrt{\left( \frac{\Delta L}{L} \right)^2 + \left( \frac{2 \Delta T}{T} \right)^2 }
     \]</p>
   </section>
 
@@ -88,7 +105,7 @@
     <label>Ruler Resolution (m):</label>
     <input type="number" id="ruler" value="0.01" step="0.001"><br><br>
 
-    <label>10 Measurements of \( T_{10} \) (sec):</label><br>
+    <label>10 Measurements of \( T_{10} \) (seconds):</label><br>
     <textarea id="T10_input">15.32, 15.28, 15.36, 15.30, 15.33, 15.29, 15.31, 15.34, 15.27, 15.35</textarea><br>
 
     <button onclick="analyzePendulum()">Calculate</button>
@@ -96,7 +113,7 @@
     <button onclick="exportCSV()">Export as CSV</button>
 
     <h3>Results:</h3>
-    <div id="pendulumOutput" style="font-family: monospace;"></div>
+    <div id="pendulumOutput" style="font-family: monospace; white-space: pre-line;"></div>
     <canvas id="pendulumChart" width="500" height="300"></canvas>
   </section>
 
@@ -125,16 +142,15 @@
       const g = (4 * Math.PI ** 2 * L) / (T ** 2);
       const deltaG = g * Math.sqrt((deltaL / L) ** 2 + (2 * deltaT / T) ** 2);
 
-      document.getElementById('pendulumOutput').innerHTML = `
-Mean T₁₀: ${meanT10.toFixed(3)} s
+      document.getElementById('pendulumOutput').innerText =
+`Mean T₁₀: ${meanT10.toFixed(3)} s
 Std Dev σ(T₁₀): ${sigma.toFixed(3)} s
 ΔT₁₀: ${deltaT10.toFixed(3)} s
 Period T: ${T.toFixed(3)} s
 ΔT: ${deltaT.toFixed(3)} s
 
 Estimated g: ${g.toFixed(3)} m/s²
-Uncertainty Δg: ±${deltaG.toFixed(3)} m/s²
-      `;
+Uncertainty Δg: ±${deltaG.toFixed(3)} m/s²`;
 
       new Chart(document.getElementById('pendulumChart'), {
         type: 'bar',
@@ -149,6 +165,7 @@ Uncertainty Δg: ±${deltaG.toFixed(3)} m/s²
           }]
         },
         options: {
+          responsive: true,
           scales: {
             y: { beginAtZero: false }
           },
