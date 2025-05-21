@@ -7,6 +7,7 @@
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -23,7 +24,7 @@
     }
     h1, h2 { color: #003366; }
     pre { background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
-    .code-highlight { color: darkred; font-weight: bold; }
+    #network { height: 500px; border: 1px solid lightgray; }
   </style>
 </head>
 <body>
@@ -32,11 +33,51 @@
   <section>
     <h2>Understanding the Concept</h2>
     <p>
-      In complex electrical circuits, calculating the equivalent resistance using traditional methods can be challenging due to nested series and parallel components. Graph theory provides a systematic approach by treating the circuit as a graph: nodes represent junctions and edges represent resistors with weights equivalent to their resistance values.
+      Analyzing electrical circuits involves determining the total resistance between two terminals. For simple series or parallel configurations, this can be done manually. However, when circuits contain loops, branches, and mixed configurations, traditional methods fall short.
     </p>
     <p>
-      By applying graph reduction techniques—such as identifying nodes of degree two for series simplification and detecting cycles for parallel combinations—we can automate and streamline the process. This enables accurate modeling of intricate circuits used in power distribution, PCB design, and microelectronic layout analysis.
+      Graph theory transforms this problem: nodes represent circuit junctions and edges represent resistors with weights as resistance values. Algorithms can then traverse and simplify these graphs by identifying patterns such as series (linear chains) and parallel (cycles or multiple edges) connections, allowing even large circuits to be simplified algorithmically.
     </p>
+    <p>
+      This mathematical approach is not just elegant—it is also practical for circuit design tools, power grid modeling, and embedded system simulations where dynamic or complex topologies are the norm.
+    </p>
+  </section>
+
+  <section>
+    <h2>Live Editable Circuit Network</h2>
+    <div id="network"></div>
+    <script>
+      const nodes = new vis.DataSet([
+        { id: 'A', label: 'A' },
+        { id: 'B', label: 'B' },
+        { id: 'X', label: 'X' },
+        { id: 'C', label: 'C' }
+      ]);
+
+      const edges = new vis.DataSet([
+        { from: 'A', to: 'X', label: '2 Ω' },
+        { from: 'X', to: 'B', label: '3 Ω' },
+        { from: 'A', to: 'B', label: '6 Ω' },
+        { from: 'X', to: 'C', label: '4 Ω' }
+      ]);
+
+      const container = document.getElementById('network');
+      const data = { nodes, edges };
+      const options = {
+        physics: false,
+        edges: {
+          font: { align: 'top' },
+          color: 'gray'
+        },
+        nodes: {
+          shape: 'dot',
+          size: 20,
+          font: { size: 16, color: '#003366' },
+          borderWidth: 2
+        }
+      };
+      new vis.Network(container, data, options);
+    </script>
   </section>
 
   <section>
@@ -51,7 +92,7 @@
         detect_supernodes_and_contract()
     return compute_resistance(start, end)</code></pre>
     <p>
-      This version improves scalability by introducing supernode detection and graph contraction, which collapse reducible clusters and simplify evaluation across complex topologies.
+      This algorithm iteratively detects and simplifies series and parallel combinations. Supernode contraction allows for efficient reduction of nested topologies in large circuits.
     </p>
   </section>
 
@@ -79,49 +120,26 @@ def simplify(G, start, end):
                 total = 1 / sum(1 / e['resistance'] for e in parallels)
                 G.remove_edges_from([(u, v)] * len(parallels))
                 G.add_edge(u, v, resistance=total)
-    return G[start][end]['resistance']
-
-G = nx.MultiGraph()
-G.add_edge('A', 'X', resistance=2)
-G.add_edge('X', 'B', resistance=3)
-G.add_edge('A', 'B', resistance=6)  # parallel path
-R_eq = simplify(G, 'A', 'B')
-print("Equivalent Resistance:", R_eq)</code></pre>
-  </section>
-
-  <section>
-    <h2>Visualizing Complex Combinations</h2>
-    <div id="plot" style="height:400px;"></div>
-    <script>
-      const layout = {
-        title: 'Resistor Network Visualization',
-        xaxis: { title: 'Position' },
-        yaxis: { title: 'Potential Level' }
-      };
-      const trace = {
-        x: [0, 1, 2, 1],
-        y: [0, 1, 0, -1],
-        text: ['A', 'X', 'B', 'C'],
-        mode: 'lines+text',
-        type: 'scatter',
-        line: { shape: 'spline' },
-        textposition: 'top center'
-      };
-      Plotly.newPlot('plot', [trace], layout);
-    </script>
+    return G[start][end]['resistance']</code></pre>
   </section>
 
   <section>
     <h2>Performance and Extensions</h2>
     <p>
-      For dense or irregular circuits, incorporating adjacency matrices or Laplacian matrices enables resistance computation via linear algebra. The effective resistance \( R_{eff} = (e_i - e_j)^T L^+ (e_i - e_j) \), where \( L^+ \) is the pseudoinverse of the Laplacian, is particularly useful in high-performance applications.
+      For dense or irregular circuits, matrix-based methods are superior. One such method uses the Laplacian matrix \( L \) of the graph. The effective resistance between nodes \( i \) and \( j \) is given by:
     </p>
     <p>
-      Future work could include:
+      \[ R_{eff} = (e_i - e_j)^T L^+ (e_i - e_j) \]
+    </p>
+    <p>
+      where \( L^+ \) is the Moore–Penrose pseudoinverse of the Laplacian. This approach is robust in high-performance computing contexts.
+    </p>
+    <p>
+      Future capabilities could include:
       <ul>
-        <li>GUI for drag-and-drop resistor networks</li>
-        <li>Symbolic algebra support using <code>sympy</code></li>
-        <li>Integration into electronic circuit simulators</li>
+        <li>Dynamic drag-and-drop circuit editor with export</li>
+        <li>Interactive resistance solver integrated with symbolic libraries</li>
+        <li>Real-time simulation overlay for current/voltage animation</li>
       </ul>
     </p>
   </section>
