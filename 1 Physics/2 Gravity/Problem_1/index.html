@@ -262,36 +262,48 @@ plt.show()</code></pre>
 <h2>3D Orbital Animation</h2>
 <div id="orbit3D"></div>
 <script>
-      const scene = new THREE.Scene();
-      const container = document.getElementById('orbit3D');
-      const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-      camera.position.set(0, 2, 6);
-      const renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      container.appendChild(renderer.domElement);
+  window.onload = function () {
+    const scene = new THREE.Scene();
+    const container = document.getElementById('orbit3D');
+    const width = container.offsetWidth;
+    const height = 400;
 
-      const controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.05;
-      controls.enableZoom = true;
+    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    camera.position.set(0, 2, 6);
 
-      const star = new THREE.Mesh(new THREE.SphereGeometry(0.2, 32, 32), new THREE.MeshBasicMaterial({ color: 0xffff00 }));
-      scene.add(star);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(width, height);
+    container.appendChild(renderer.domElement);
 
-      const radius = 2;
-      const planet = new THREE.Mesh(new THREE.SphereGeometry(0.05, 32, 32), new THREE.MeshBasicMaterial({ color: 0x00aaff }));
-      scene.add(planet);
-      let angle = 0;
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.enableZoom = true;
 
-      function animate() {
-        requestAnimationFrame(animate);
-        angle += 0.01;
-        planet.position.x = radius * Math.cos(angle);
-        planet.position.z = radius * Math.sin(angle);
-        controls.update();
-        renderer.render(scene, camera);
-      }
-      animate();
+    const star = new THREE.Mesh(
+      new THREE.SphereGeometry(0.2, 32, 32),
+      new THREE.MeshBasicMaterial({ color: 0xffff00 })
+    );
+    scene.add(star);
+
+    const radius = 2;
+    const planet = new THREE.Mesh(
+      new THREE.SphereGeometry(0.05, 32, 32),
+      new THREE.MeshBasicMaterial({ color: 0x00aaff })
+    );
+    scene.add(planet);
+
+    let angle = 0;
+    function animate() {
+      requestAnimationFrame(animate);
+      angle += 0.01;
+      planet.position.x = radius * Math.cos(angle);
+      planet.position.z = radius * Math.sin(angle);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  }
     </script>
 </section>
 <section>
