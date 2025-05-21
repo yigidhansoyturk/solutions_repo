@@ -42,7 +42,7 @@
     }
     canvas { margin-top: 20px; }
     button {
-      margin: 10px 5px;
+      margin-bottom: 20px;
       padding: 10px 20px;
       font-size: 14px;
       cursor: pointer;
@@ -65,88 +65,124 @@
 </head>
 <body>
   <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
-  <button onclick="addOrbit()">Add Orbit</button>
   <h1>Kepler's Third Law and Orbital Mechanics</h1>
+
+  <section>
+    <h2>Overview</h2>
+    <p>Kepler's Third Law is one of the foundational principles of celestial mechanics. It states that the square of the orbital period \( T^2 \) is proportional to the cube of the orbital radius \( r^3 \). This elegant relationship reveals the connection between time and space in orbital systems and allows astronomers to calculate planetary motions, design satellite orbits, and explore gravitational dynamics. It provides the framework for understanding how bodies move under the influence of gravity, from moons orbiting planets to entire planetary systems orbiting stars.</p>
+  </section>
+
+  <section>
+    <h2>Derivation</h2>
+    <p>From Newton's laws:</p>
+    <p>\[ F = \frac{G M m}{r^2} \quad \text{and} \quad F = \frac{m v^2}{r} \]</p>
+    <p>Equating the forces and substituting for \( v = \frac{2 \pi r}{T} \):</p>
+    <p>\[ T^2 = \frac{4 \pi^2 r^3}{G M} \]</p>
+    <p>This shows \( T^2 \propto r^3 \).</p>
+  </section>
+
+  <section>
+    <h2>Python Simulation (Code Explanation)</h2>
+    <p>The following Python code computes orbital periods for various radii and verifies Kepler's law:</p>
+    <pre><code>import numpy as np
+import matplotlib.pyplot as plt
+
+G = 6.67430e-11  # Gravitational constant
+M = 5.972e24     # Earth's mass
+radii = np.linspace(7e6, 4.2e7, 100)
+periods = 2 * np.pi * np.sqrt(radii**3 / (G * M))
+
+plt.plot(radii**3, periods**2)
+plt.title("Kepler's Law: T^2 vs r^3")
+plt.xlabel("r^3 (m^3)")
+plt.ylabel("T^2 (s^2)")
+plt.grid(True)
+plt.show()</code></pre>
+  </section>
+
+  <section>
+    <h2>Visualization</h2>
+    <canvas id="keplerChart" width="800" height="400"></canvas>
+    <script>
+      const G = 6.67430e-11;
+      const M = 5.972e24;
+      const radii = Array.from({length: 100}, (_, i) => 7e6 + i * (4.2e7 - 7e6) / 99);
+      const r3 = radii.map(r => r ** 3);
+      const T2 = radii.map(r => Math.pow(2 * Math.PI * Math.sqrt(r ** 3 / (G * M)), 2));
+
+      const ctx = document.getElementById('keplerChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: r3,
+          datasets: [{
+            label: 'T² vs r³',
+            data: T2,
+            borderColor: 'blue',
+            borderWidth: 2,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          animation: {
+            duration: 1500,
+            easing: 'easeOutBounce'
+          },
+          scales: {
+            x: {
+              type: 'linear',
+              title: { display: true, text: 'r³ (m³)' }
+            },
+            y: {
+              title: { display: true, text: 'T² (s²)' }
+            }
+          }
+        }
+      });
+    </script>
+  </section>
 
   <section>
     <h2>3D Orbital Animation</h2>
     <div id="orbit3D"></div>
     <script>
-      let scene, camera, renderer, controls;
-      let planets = [], angles = [], orbits = [];
+      const scene = new THREE.Scene();
+      const container = document.getElementById('orbit3D');
+      const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+      camera.position.set(0, 2, 6);
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      container.appendChild(renderer.domElement);
 
-      function initScene() {
-        scene = new THREE.Scene();
-        const container = document.getElementById('orbit3D');
-        const width = container.clientWidth;
-        const height = container.clientHeight;
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.enableZoom = true;
 
-        camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-        camera.position.set(0, 2, 6);
+      const star = new THREE.Mesh(new THREE.SphereGeometry(0.2, 32, 32), new THREE.MeshBasicMaterial({ color: 0xffff00 }));
+      scene.add(star);
 
-        renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(width, height);
-        container.appendChild(renderer.domElement);
-
-        controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.enableZoom = true;
-
-        const starGeometry = new THREE.SphereGeometry(0.2, 32, 32);
-        const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-        const star = new THREE.Mesh(starGeometry, starMaterial);
-        scene.add(star);
-      }
-
-      function addOrbit() {
-        const base = 2;
-        const radius = base + orbits.length * 0.5;
-        const geometry = new THREE.SphereGeometry(0.05, 32, 32);
-        const material = new THREE.MeshBasicMaterial({ color: new THREE.Color(`hsl(${orbits.length * 72}, 100%, 50%)`) });
-        const planet = new THREE.Mesh(geometry, material);
-        scene.add(planet);
-        planets.push({ mesh: planet, radius: radius });
-        angles.push(0);
-        orbits.push(radius);
-
-        const segments = 64;
-        const orbitGeometry = new THREE.BufferGeometry();
-        const points = [];
-        for (let j = 0; j <= segments; j++) {
-          const theta = (j / segments) * 2 * Math.PI;
-          points.push(new THREE.Vector3(radius * Math.cos(theta), 0, radius * Math.sin(theta)));
-        }
-        orbitGeometry.setFromPoints(points);
-        const orbitMaterial = new THREE.LineBasicMaterial({ color: 0x888888 });
-        const orbitLine = new THREE.LineLoop(orbitGeometry, orbitMaterial);
-        scene.add(orbitLine);
-      }
+      const radius = 2;
+      const planet = new THREE.Mesh(new THREE.SphereGeometry(0.05, 32, 32), new THREE.MeshBasicMaterial({ color: 0x00aaff }));
+      scene.add(planet);
+      let angle = 0;
 
       function animate() {
         requestAnimationFrame(animate);
-        planets.forEach((p, i) => {
-          angles[i] += 0.01 / Math.sqrt(p.radius);
-          p.mesh.position.x = p.radius * Math.cos(angles[i]);
-          p.mesh.position.z = p.radius * Math.sin(angles[i]);
-        });
+        angle += 0.01;
+        planet.position.x = radius * Math.cos(angle);
+        planet.position.z = radius * Math.sin(angle);
         controls.update();
         renderer.render(scene, camera);
       }
-
-      window.addEventListener('resize', () => {
-        const container = document.getElementById('orbit3D');
-        const width = container.clientWidth;
-        const height = container.clientHeight;
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-        renderer.setSize(width, height);
-      });
-
-      initScene();
-      addOrbit();
       animate();
     </script>
+  </section>
+
+  <section>
+    <h2>Discussion</h2>
+    <p>Kepler's Third Law not only simplifies the analysis of orbital systems but also lays the foundation for space travel and astrophysics. It can be extended to elliptical orbits by using the semi-major axis in place of radius.</p>
   </section>
 
   <script>
