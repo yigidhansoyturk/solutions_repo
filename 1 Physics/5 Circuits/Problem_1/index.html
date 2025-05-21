@@ -196,21 +196,68 @@
       };
       new vis.Network(container, data, options);
     </script>
+<div style="margin-top: 20px;">
+<button onclick="computeResistance()">Compute Resistance from A to B</button>
+<p id="resistanceResult" style="margin-top: 10px; font-weight: bold;"></p>
+</div>
+<script>
+      function computeResistance() {
+        const edgeList = edges.get();
+        let total = 0;
+        let pathCount = 0;
+        for (const edge of edgeList) {
+          if ((edge.from === 'A' && edge.to === 'B') || (edge.from === 'B' && edge.to === 'A')) {
+            const value = parseFloat(edge.label);
+            if (!isNaN(value)) {
+              total += 1 / value;
+              pathCount++;
+            }
+          }
+        }
+        if (pathCount > 0) {
+          const result = 1 / total;
+          document.getElementById('resistanceResult').textContent = `Approx. Resistance (A-B): ${result.toFixed(2)} Ω`;
+        } else {
+          document.getElementById('resistanceResult').textContent = 'No direct or parallel connection between A and B found.';
+        }
+      }
+    </script>
 </section>
 <section>
-<h2>Advanced Algorithm Overview</h2>
-<pre><code>function simplify_circuit(graph, start, end):
-    while changes_detected:
-        for each node in graph:
-            if node.degree == 2 and not endpoint:
-                merge_series(node)
-        for each set of parallel edges:
-            merge_parallel(set)
-        detect_supernodes_and_contract()
-    return compute_resistance(start, end)</code></pre>
+<h2>Graph-Based Circuit Simplification Illustration</h2>
 <p>
-      This algorithm iteratively detects and simplifies series and parallel combinations. Supernode contraction allows for efficient reduction of nested topologies in large circuits.
-    </p>
+    Below is a visual summary of how graph-based circuit simplification works. Series and parallel connections are dynamically reduced to calculate the total resistance between terminals. This process mirrors how software like SPICE or network analyzers internally process circuits.
+  </p>
+<div id="simplificationDiagram"></div>
+<script>
+    const diagramLayout = {
+      title: 'Simplification Pattern: Series and Parallel Edges',
+      margin: { t: 40, l: 40, r: 40, b: 40 },
+      xaxis: { showgrid: false, zeroline: false },
+      yaxis: { showgrid: false, zeroline: false }
+    };
+    const seriesTrace = {
+      x: [0, 1, 2],
+      y: [0, 0, 0],
+      mode: 'lines+markers+text',
+      type: 'scatter',
+      name: 'Series',
+      line: { width: 3, color: 'blue' },
+      text: ['A', '', 'B'],
+      textposition: 'top center'
+    };
+    const parallelTrace = {
+      x: [4, 5, 6, 5, 4],
+      y: [0, 1, 0, -1, 0],
+      mode: 'lines+markers+text',
+      type: 'scatter',
+      name: 'Parallel',
+      line: { width: 3, color: 'orange' },
+      text: ['A', '', 'B', '', ''],
+      textposition: 'top center'
+    };
+    Plotly.newPlot('simplificationDiagram', [seriesTrace, parallelTrace], diagramLayout);
+  </script>
 </section>
 <section>
 <h2>Python Implementation with networkx</h2>
