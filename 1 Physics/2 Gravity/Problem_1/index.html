@@ -134,42 +134,46 @@
       padding: 0;
       background: linear-gradient(to right, #e0f7fa, #f3e5f5);
       color: #333;
+      overflow-x: hidden;
     }
 
     header {
       background: linear-gradient(to right, #1a237e, #3949ab);
       color: white;
       text-align: center;
-      padding: 40px 20px;
+      padding: 60px 20px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 1.5s ease;
     }
 
     header h1 {
-      font-size: 2.5em;
+      font-size: 3em;
       margin-bottom: 10px;
     }
 
     header p {
-      font-size: 1.2em;
-      opacity: 0.9;
+      font-size: 1.3em;
+      opacity: 0.95;
     }
 
     section {
       background: white;
-      margin: 30px auto;
-      padding: 30px;
-      max-width: 900px;
-      border-radius: 12px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      margin: 40px auto;
+      padding: 40px;
+      max-width: 960px;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      animation: slideIn 1s ease;
     }
 
     h2 {
       color: #512da8;
       margin-top: 0;
+      font-size: 1.8em;
     }
 
     p {
-      font-size: 1.1em;
+      font-size: 1.15em;
     }
 
     canvas {
@@ -177,35 +181,42 @@
       margin: 30px auto;
       background: #fefefe;
       border: 2px dashed #b39ddb;
-      border-radius: 8px;
+      border-radius: 10px;
+      transition: transform 0.3s ease;
     }
 
-    footer {
-      text-align: center;
-      padding: 20px;
-      background-color: #ede7f6;
-      font-size: 0.9em;
-      color: #555;
+    canvas:hover {
+      transform: scale(1.03);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
     }
   </style>
 </head>
 <body>
 <header>
 <h1>Understanding Kepler's Third Law of Planetary Motion</h1>
-<p>A deep dive into the connection between orbital period and orbital radius</p>
+<p>Exploring the profound connection between time and space in orbital mechanics</p>
 </header>
 <section>
 <h2>Kepler's Third Law Explained</h2>
-<p>Kepler's Third Law states that the square of the orbital period (T) of a planet is proportional to the cube of the semi-major axis (r) of its orbit: <strong>T<sup>2</sup> ∝ r<sup>3</sup></strong>. This means that if you know how far a planet is from the object it is orbiting, you can predict how long it will take to complete one orbit. In the case of circular orbits, this relationship can be derived precisely from Newtonian mechanics.</p>
-<p>Let’s derive the law using the balance between centripetal force and gravitational force. The gravitational force between two objects is <strong>F = GMm/r<sup>2</sup></strong>, and the centripetal force required to keep a mass in circular motion is <strong>F = mv<sup>2</sup>/r</strong>. Setting these equal gives:</p>
+<p>Kepler's Third Law of Planetary Motion reveals a precise and elegant relationship: the square of a planet's orbital period is directly proportional to the cube of its orbit's semi-major axis. Mathematically, this is written as <strong>T<sup>2</sup> ∝ r<sup>3</sup></strong>. This law applies to all bodies in orbit, from artificial satellites around Earth to distant exoplanets revolving around other stars.</p>
+<p>To derive this relationship for circular orbits, we start by balancing two forces. The gravitational force pulling the orbiting object inward is given by <strong>F = GMm/r<sup>2</sup></strong>. This must equal the centripetal force needed to keep it moving in a circle: <strong>F = mv<sup>2</sup>/r</strong>. Setting them equal:</p>
 <p><strong>mv<sup>2</sup>/r = GMm/r<sup>2</sup></strong></p>
-<p>Solving for velocity <em>v</em> and substituting <em>v = 2πr/T</em>, we find:</p>
+<p>After canceling and solving for velocity, we substitute <strong>v = 2πr / T</strong>, leading us to:</p>
 <p><strong>T<sup>2</sup> = (4π<sup>2</sup>/GM)r<sup>3</sup></strong></p>
-<p>This is Kepler’s Third Law for circular orbits.</p>
+<p>This shows that for a fixed central mass, the ratio T<sup>2</sup> / r<sup>3</sup> is constant. It is a key result of Newtonian mechanics and forms the foundation of orbital analysis.</p>
 </section>
 <section>
-<h2>Visualizing Orbits and the Law</h2>
-<p>The following graphic represents three different orbits around a central body. The sizes are scaled to show increasing orbital radii. In each orbit, the period increases with distance according to Kepler's Third Law.</p>
+<h2>Visualizing Orbital Relationships</h2>
+<p>Here is a simplified visualization of circular orbits around a central mass. Each orbit shows a planet at a proportional distance. The farther a planet is, the longer it takes to complete an orbit, as predicted by Kepler's Third Law.</p>
 <canvas height="500" id="orbitCanvas" width="500"></canvas>
 <script>
       const canvas = document.getElementById("orbitCanvas");
@@ -216,7 +227,7 @@
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
 
-        // Draw central star
+        // Central star
         ctx.beginPath();
         ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI);
         ctx.fillStyle = "orange";
@@ -233,7 +244,7 @@
           ctx.arc(centerX, centerY, orbit.radius, 0, 2 * Math.PI);
           ctx.strokeStyle = orbit.color;
           ctx.lineWidth = 2;
-          ctx.setLineDash([5, 5]);
+          ctx.setLineDash([6, 4]);
           ctx.stroke();
           ctx.setLineDash([]);
 
@@ -256,23 +267,21 @@
     </script>
 </section>
 <section>
-<h2>Extension to Elliptical Orbits</h2>
-<p>While the derivation above assumes circular orbits, Kepler originally observed his law in elliptical orbits. In these cases, the semi-major axis of the ellipse replaces the radius. The law still holds: the time it takes for a planet to orbit is related to the size of its orbit, regardless of its shape.</p>
-<p>This generalization is powerful because most celestial bodies, including comets and some moons, follow elliptical paths.</p>
+<h2>Beyond Circles: Elliptical Orbits</h2>
+<p>While circular orbits make the math elegant, most celestial paths are elliptical. Kepler discovered that the same law holds if we use the ellipse's semi-major axis. This insight means that even in stretched orbits—like those of comets or some moons—the same fundamental relationship governs motion. This universality is what makes Kepler's Third Law so powerful.</p>
 </section>
 <section>
-<h2>Applications in Astronomy</h2>
-<p>Kepler's Third Law allows scientists to measure the masses of distant planets and stars. For example, if the period and radius of a moon orbiting a planet are known, the mass of the planet can be calculated. This method is commonly used in both our Solar System and in distant exoplanetary systems.</p>
-<p>It also provides critical information for space missions, satellite placements, and understanding gravitational fields in a system.</p>
+<h2>Practical Use in Astronomy</h2>
+<p>In astronomy, Kepler’s Third Law enables the measurement of unknown masses. Observing a moon orbiting a planet reveals the planet's mass. Astronomers use this technique extensively, not just in our Solar System but also to estimate the masses of exoplanets and stars based on the orbits of companions.</p>
+<p>Engineers and mission planners also rely on this law to design satellite orbits, space probes, and even calculate escape velocities and gravitational slingshots.</p>
 </section>
 <section>
-<h2>Real-World Examples</h2>
-<p>The Moon orbits Earth at a distance of about 384,000 km and completes one orbit approximately every 27.3 days. Plugging these values into Kepler’s formula provides a close approximation of Earth's mass.</p>
-<p>Similarly, planets in our Solar System obey Kepler’s law. For example, Jupiter, being much farther from the Sun than Earth, has an orbital period of about 12 Earth years.</p>
+<h2>Examples from the Real Universe</h2>
+<p>The Moon’s average orbital distance is around 384,000 km, and its orbital period is about 27.3 days. Using Kepler’s formula, we can accurately back-calculate the Earth’s mass. Likewise, Kepler’s Third Law predicts that planets further from the Sun, like Saturn or Neptune, take significantly longer to complete an orbit than closer planets like Mercury or Venus.</p>
 </section>
 <section>
-<h2>Simulating Orbits</h2>
-<p>Below is a simulation verifying the T<sup>2</sup> ∝ r<sup>3</sup> relationship for different orbital radii. Open your browser's developer console to view the output.</p>
+<h2>Simulation and Numerical Verification</h2>
+<p>To verify Kepler's Law numerically, we simulate circular orbits with increasing radii. We calculate the orbital period and compare the ratio T<sup>2</sup>/r<sup>3</sup> for each. Open the browser console to see how consistently the law holds across distances.</p>
 <script>
       function verifyKeplerLaw() {
         const G = 6.67430e-11;
@@ -295,9 +304,6 @@
       verifyKeplerLaw();
     </script>
 </section>
-<footer>
-<p>© 2025 Kepler's Third Law Educational Site</p>
-</footer>
 </body>
 </html>
 </div>
