@@ -12,7 +12,7 @@
       padding: 20px;
       color: #222;
     }
-    h1, h2 {
+    h1, h2, h3 {
       color: #003366;
     }
     canvas {
@@ -38,10 +38,45 @@
   <h1>Estimating π Using Monte Carlo Methods</h1>
 
   <section>
-    <h2>1. Circle-Based Simulation</h2>
-    <p>This method uses the ratio of points falling inside a circle to estimate π. The formula is:</p>
-    <p>\[\pi \approx 4 \cdot \frac{\text{points inside circle}}{\text{total points}}\]</p>
+    <h2>Overview</h2>
+    <p>
+      <strong>π</strong> is a fundamental constant in mathematics, representing the ratio of a circle's circumference to its diameter.
+      While its value is well known, one fascinating way to approximate π is through <strong>Monte Carlo simulation</strong> —
+      using randomness to solve a deterministic problem.
+    </p>
+    <p>
+      This approach leverages the <em>law of large numbers</em>: by running many random experiments, we can statistically converge
+      to the true value of π. Two classic methods are featured in this simulator:
+    </p>
 
+    <h3>🎯 1. Circle-Based Point Sampling</h3>
+    <p>
+      This method inscribes a unit circle within a square. Random points are scattered across the square, and the ratio of points
+      that fall inside the circle estimates the area — and therefore π:
+    </p>
+    <p style="font-size: 1.1em;">
+      <strong>\[\pi \approx 4 \cdot \frac{\text{points inside circle}}{\text{total points}}\]</strong>
+    </p>
+
+    <h3>📏 2. Buffon’s Needle Experiment</h3>
+    <p>
+      Proposed by Georges-Louis Leclerc, Comte de Buffon in the 18th century, this probabilistic method involves dropping a
+      needle of length \(L\) onto a floor with evenly spaced parallel lines \(d\) apart. The chance of a needle crossing a
+      line is tied directly to π:
+    </p>
+    <p style="font-size: 1.1em;">
+      <strong>\[\pi \approx \frac{2 \cdot L \cdot N}{d \cdot C}\]</strong>
+    </p>
+
+    <h3>🔍 Why It Matters</h3>
+    <p>
+      Monte Carlo methods aren’t just for estimating π — they’re foundational in physics, finance, machine learning, and beyond.
+      These simulations illustrate how randomness can reveal structure, and how simple visual models can produce profound results.
+    </p>
+  </section>
+
+  <section>
+    <h2>1. Circle-Based Simulation</h2>
     <div class="controls">
       <label for="circlePoints">Number of Points:</label>
       <input type="range" id="circlePoints" min="100" max="10000" step="100" value="1000">
@@ -54,9 +89,6 @@
 
   <section>
     <h2>2. Buffon's Needle Simulation</h2>
-    <p>This method estimates π based on the probability of a needle crossing parallel lines:</p>
-    <p>\[\pi \approx \frac{2 \cdot L \cdot N}{d \cdot C}\]</p>
-
     <div class="controls">
       <label for="needleThrows">Number of Throws:</label>
       <input type="range" id="needleThrows" min="100" max="10000" step="100" value="1000">
@@ -92,14 +124,11 @@
         const dx = x - 0.5, dy = y - 0.5;
         const d2 = dx * dx + dy * dy;
         const cx = x * 400, cy = y * 400;
-        if (d2 <= 0.25) {
-          inside++;
-          ctx1.fillStyle = "blue";
-        } else {
-          ctx1.fillStyle = "red";
-        }
+        ctx1.fillStyle = d2 <= 0.25 ? "blue" : "red";
+        if (d2 <= 0.25) inside++;
         ctx1.fillRect(cx, cy, 1.5, 1.5);
       }
+
       const pi = 4 * inside / points;
       document.getElementById("circleResult").innerHTML = `<strong>Estimated π: ${pi.toFixed(5)}</strong>`;
     }
@@ -119,7 +148,6 @@
       let crosses = 0;
       ctx2.clearRect(0, 0, 400, 400);
 
-      // draw lines
       ctx2.strokeStyle = "#999";
       for (let x = d; x < 400; x += d) {
         ctx2.beginPath();
@@ -138,13 +166,11 @@
         const y2 = y + (L / 2) * Math.sin(angle);
         const y1 = y - (L / 2) * Math.sin(angle);
 
-        // draw needle
         ctx2.beginPath();
         ctx2.moveTo(x1, y1);
         ctx2.lineTo(x2, y2);
         ctx2.stroke();
 
-        // check if it crosses any vertical line
         const xMin = Math.min(x1, x2);
         const xMax = Math.max(x1, x2);
         for (let lineX = d; lineX < 400; lineX += d) {
@@ -165,7 +191,6 @@
         `<strong>Estimated π: ${pi} (${crosses} crossings)</strong>`;
     }
 
-    // Run both initially
     simulateCircle();
     simulateNeedle();
   </script>
