@@ -154,8 +154,23 @@
 <section>
 <h2>Concept and Explanation</h2>
 <p>
-      This tool allows you to construct and analyze electrical circuits using graph theory. Each node represents a junction and each edge represents a resistor with a specified resistance. Resistance is calculated using parallel combination rules between selected nodes.
-    </p>
+    In electrical circuits, calculating the total or "equivalent" resistance between two points is essential for understanding current flow and power distribution. Traditional methods involve step-by-step application of series and parallel rules. However, for more complex circuits—especially ones with nested loops or multiple branches—this approach becomes inefficient.
+  </p>
+<p>
+    Graph theory offers a powerful alternative. A circuit can be modeled as a graph, where <strong>nodes</strong> represent junctions and <strong>edges</strong> represent resistors. This abstraction allows us to apply algorithms for automatically simplifying and analyzing the network. Series connections are identified as nodes with two neighbors and merged into a single edge. Parallel connections are detected when multiple edges connect the same node pair, and can be reduced using the reciprocal sum formula for parallel resistances.
+  </p>
+<p>
+    Using these principles, this tool lets you:
+  </p>
+<ul>
+<li>Create and edit circuit graphs interactively</li>
+<li>Visually assign resistance values between any two nodes</li>
+<li>Select start and end nodes to compute their combined resistance using direct or parallel connection logic</li>
+<li>Export your circuit as an image or downloadable JSON file for reuse</li>
+</ul>
+<p>
+    This approach is not only more scalable but also opens the door to symbolic computation, live simulation, and integration with digital circuit design tools.
+  </p>
 </section>
 <script>
     const nodes = new vis.DataSet([
